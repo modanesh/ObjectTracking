@@ -1,10 +1,17 @@
+from collections import Counter
 from PIL import Image, ImageDraw
 import cv2
-from matplotlib import patches
-import matplotlib.pyplot as plt
 from colorthief import ColorThief
+from numpy import mean
+import os
+
 
 def extract_frames(path):
+    """
+    saves frames from the video.
+
+    :param path: path to the video
+    """
     vidcap = cv2.VideoCapture(path)
     success,image = vidcap.read()
     count = 0
@@ -16,63 +23,155 @@ def extract_frames(path):
         count += 1
 
 
-def extract_pedestrians(line):
-    ll = lines[line].split("\t")
-    pedestrian_x = ll[5]
-    pedestrian_y = ll[6]
-    pedestrian_width = ll[7]
-    pedestrian_height = ll[8]
-    frame_number = ll[10]
-    print(pedestrian_x)
-    print(pedestrian_y)
-    print(pedestrian_width)
-    print(pedestrian_height)
-    print(frame_number)
+def extract_big_pedestrians(id):
+    """
+    extract pedestrians with BIG BOUNDING BOXES from images using a line of annotation file. saves cropped frames containing only the upper-body of pedestrians.
+
+    :param id: person id in the annotation file
+    """
+    count = 0
+
+    # loop over all the persons and crop their photo
+    for line in range(3, len(lines)):
+
+        if str(id) == lines[line].split("\t")[3] and count < 10:
+            if lines[line].split("\t")[11] == str(1):
+                if int(lines[line].split("\t")[7]) > 40 and int(lines[line].split("\t")[8]) > 120:
+                    pedestrian_x = lines[line].split("\t")[5]
+                    pedestrian_y = lines[line].split("\t")[6]
+                    pedestrian_width = lines[line].split("\t")[7]
+                    pedestrian_height = lines[line].split("\t")[8]
+                    frame_number = lines[line].split("\t")[10]
+
+                    img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/frames/frame%d.jpeg" % int(frame_number))
+
+                    img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
+
+                    width, height = img2.size
+                    shirt = int(height/5)
+                    img2 = img2.crop((0, shirt, width, shirt*3))
+
+                    img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
+
+                    count += 1
+
+                    # keep persons who have big bounding boxes
+                    if id not in big_box_ids:
+                        big_box_ids.append(id)
 
 
-    img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/frame%d.jpeg" % int(frame_number))
+def extract_little_pedestrians(id):
+    """
+        extract pedestrians with LITTLE BOUNDING BOXES from images using a line of annotation file. saves cropped frames containing only the upper-body of pedestrians.
 
-    img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
+        :param id: person id in the annotation file
+        """
+    count = 0
+
+    # loop over persons who have a little bounding boxes and crop their photos
+    for line in range(3, len(lines)):
+        if str(id) == lines[line].split("\t")[3] and count < 10:
+            if lines[line].split("\t")[3] not in str(big_box_ids):
+                if lines[line].split("\t")[11] == str(1):
+                    if int(lines[line].split("\t")[7]) > 40 or int(lines[line].split("\t")[8]) > 120:
+                        pedestrian_x = lines[line].split("\t")[5]
+                        pedestrian_y = lines[line].split("\t")[6]
+                        pedestrian_width = lines[line].split("\t")[7]
+                        pedestrian_height = lines[line].split("\t")[8]
+                        frame_number = lines[line].split("\t")[10]
+
+                        print(line)
+                        print(lines[line].split("\t")[3])
+                        print(str(big_box_ids))
+                        print(lines[line].split("\t")[3] not in str(big_box_ids))
+
+                        img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/frames/frame%d.jpeg" % int(frame_number))
+
+                        img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
+
+                        width, height = img2.size
+                        shirt = int(height/5)
+                        img2 = img2.crop((0, shirt, width, shirt*3))
+
+                        img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
+
+                        count += 1
 
 
-    width, height = img2.size
-    shirt = int(height/5)
-    img2 = img2.crop((0, shirt, width, shirt*3))
+def extract_RGB(path):
+    """
 
-    img2.save("cropped_frame" + frame_number + ".jpg")
-
-    color_thief = ColorThief('/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/cropped_frame' + frame_number + '.jpg')
+    :param path: path to image
+    :return: tuple of dominant colors in an images in RGB
+    """
+    color_thief = ColorThief(path)
     # get the dominant color
     dominant_color = color_thief.get_color(quality=1)
 
-    print("dominant color(in RGB): " + str(dominant_color))
+    return dominant_color
 
 
-def select_frames():
-    pedestrian_ids_frames = []
-    for i in range(3,len(lines)):
-        id = lines[i].split("\t")[3]
-        fnumber = lines[i].split("\t")[10]
+def id_in_frames(id):
+    """
 
-        pedestrian_ids_frames.append([id, fnumber])
-
-    print(len(pedestrian_ids_frames))
+    :param id: get the id of pedestrian
+    :return: average dominant color the person in 10 different frames
+    """
+    # count = 0
+    # id_dominant_colors = []
+    # for line in range(3, len(lines)):
+    #     if lines[line].split("\t")[3] == str(id):
+    #         if lines[line].split("\t")[11] == str(1) and count < 10:
+    #
+    #             dominant_color = extract_RGB('/resources/cropped_frames/cropped_frame' + "_" + lines[line].split("\t")[3] + "_" + lines[line].split("\t")[10] + '.jpg')
+    #             id_dominant_colors.append(dominant_color)
+    #             count += 1
+    #
+    # average_dominant_colors = mean(id_dominant_colors, axis=0).astype(int)
+    # print(id_dominant_colors)
+    # print(average_dominant_colors)
+    #
+    # return average_dominant_colors
 
     count = 0
-    first_id = pedestrian_ids_frames[0][0]
-    # for j in range(len(pedestrian_ids_frames)):
-        # if pedestrian_ids_frames[0][j] == first_id:
+    id_dominant_colors = []
+    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/cropped_frames/"
+    for filename in os.listdir(path):
+        # print(filename.startswith("cropped_frame_" + str(id)))
+        if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
+            print(filename)
+            dominant_color = extract_RGB(path+filename)
+            id_dominant_colors.append(dominant_color)
+
+    average_dominant_color = mean(id_dominant_colors, axis=0).astype(int)
+    print(id_dominant_colors)
+    print(average_dominant_color)
+
+
+    return average_dominant_color
 
 
 
-ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/resources/1.txt", "r")
-lines = ann_file.readlines()
-extract_pedestrians(3)
-select_frames()
-print(len(lines))
 
-color_thief = ColorThief("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/a.png")
-# get the dominant color
-dominant_color = color_thief.get_color(quality=1)
+if __name__ == '__main__':
 
-print("dominant color(in RGB): " + str(dominant_color))
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/1.txt", "r")
+    lines = ann_file.readlines()
+    id_camera_color = []
+    big_box_ids = []
+    average_all_colors = []
+
+
+
+    for i in range(1, 77):
+        # extract_big_pedestrians(i)
+        average_color = id_in_frames(i)
+        average_all_colors.append((i, average_color))
+        # id_camera_color.append((i, 1, average_color))
+
+    # for i in range(1, 77):
+        # extract_little_pedestrians(i)
+
+    print(average_all_colors)
+
+
