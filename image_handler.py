@@ -117,14 +117,14 @@ def extract_RGB(path):
     return dominant_color
 
 
-def id_in_frames(id):
+def id_in_frames(id, camera_id):
     """
 
     :param id: get the id of pedestrian
     :return: average dominant color of the person in 10 different frames
     """
     id_dominant_colors = []
-    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/cropped_frames/"
+    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/cropped_frames/"
     for filename in os.listdir(path):
         # print(filename.startswith("cropped_frame_" + str(id)))
         if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
@@ -149,21 +149,29 @@ if __name__ == '__main__':
     id_camera_color = []
     big_box_ids = []
     average_all_colors = []
+    cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
 
 
-    extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.m4v")
+    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.m4v")
 
 
 
+    # for i in range(1, 18):
+    #     extract_big_pedestrians(i)
+
+    # for i in range(1, 18):
+    #     extract_little_pedestrians(i)
+
+    file = open("colors.txt", "a")
+    camera_id = 22
     for i in range(1, 18):
-        extract_big_pedestrians(i)
-        # average_color = id_in_frames(i)
-        # average_all_colors.append((i, average_color))
-        # id_camera_color.append((i, 1, average_color))
+        average_color = id_in_frames(i, camera_id)
+        average_all_colors.append((i, average_color))
+        id_camera_color.append((camera_id, i, average_color))
 
-    for i in range(1, 18):
-        extract_little_pedestrians(i)
-
+    file.write(str(id_camera_color)+"\n")
     print(average_all_colors)
+    print(id_camera_color)
+    file.close()
 
 
