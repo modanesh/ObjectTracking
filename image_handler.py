@@ -1,9 +1,13 @@
+import colorsys
 from collections import Counter
 from PIL import Image, ImageDraw
 import cv2
 from colorthief import ColorThief
 from numpy import mean
 import os
+import numpy as np
+from matplotlib import pyplot as plt
+
 
 
 def extract_frames(path):
@@ -104,17 +108,87 @@ def extract_little_pedestrians(id):
                         count += 1
 
 
-def extract_RGB(path):
+def calculate_median_cut_RGB(path):
     """
+    calculates the dominant colors in an image using the median cut algorithm, which
+    is a sort of averaging pixel values.
 
     :param path: path to image
-    :return: tuple of dominant colors in an images in RGB
+    :return: tuple of AVERAGING DOMINANT colors in an image in RGB
     """
     color_thief = ColorThief(path)
     # get the dominant color
     dominant_color = color_thief.get_color(quality=1)
 
     return dominant_color
+
+
+def calculate_histogram(path):
+    """
+    calculates the histogram of colors in an image, in RGB channels.
+
+    :param path: path to image
+    :return: tuple of HISTOGRAM colors in an image in RGB
+    """
+    img = cv2.imread(path)
+
+    histogram_b = cv2.calcHist([img], [0], None, [256], [0, 256])
+    histogram_g = cv2.calcHist([img], [1], None, [256], [0, 256])
+    histogram_r = cv2.calcHist([img], [2], None, [256], [0, 256])
+    image_hist = []
+    image_hist.append((histogram_r.tolist().index(np.amax(histogram_r)), histogram_g.tolist().index(np.amax(histogram_g)), histogram_b.tolist().index(np.amax(histogram_b))))
+
+    return image_hist
+
+
+def calculate_most_frequent_color(path):
+    """
+        calculates the most frequent RGB colors in pixels of an image.
+
+        :param path: path to image
+        :return: tuple of HISTOGRAM colors in an image in RGB
+        """
+    image = Image.open(path)
+
+    w, h = image.size
+    pixels = image.getcolors(w * h)
+
+    most_frequent_pixel = pixels[0]
+
+    for count, colour in pixels:
+        if count > most_frequent_pixel[0]:
+            most_frequent_pixel = (count, colour)
+
+    return most_frequent_pixel[1]
+
+
+def hue_from_image(path):
+    img = Image.open(path)
+    r,g,b = img.split()
+    Hdat = []
+    Sdat = []
+    Vdat = []
+    for rd,gn,bl in zip(r.getdata(),g.getdata(),b.getdata()) :
+        h,s,v = colorsys.rgb_to_hsv(rd/255.,gn/255.,bl/255.)
+        Hdat.append(int(h*255.))
+        Sdat.append(int(s*255.))
+        Vdat.append(int(v*255.))
+
+    return Hdat
+
+
+def hue_from_rgb(colors):
+    red, green, blue = colors
+    print(red)
+    Hdat = []
+    Sdat = []
+    Vdat = []
+    h, s, v = colorsys.rgb_to_hsv(red/255., green/255., blue/255.)
+    Hdat.append(int(h*255.))
+    Sdat.append(int(s*255.))
+    Vdat.append(int(v*255.))
+
+    return Hdat
 
 
 def id_in_frames(id, camera_id):
@@ -129,7 +203,7 @@ def id_in_frames(id, camera_id):
         # print(filename.startswith("cropped_frame_" + str(id)))
         if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
             print(filename)
-            dominant_color = extract_RGB(path+filename)
+            dominant_color = calculate_median_cut_RGB(path+filename)
             id_dominant_colors.append(dominant_color)
 
     average_dominant_color = mean(id_dominant_colors, axis=0).astype(int)
@@ -140,6 +214,15 @@ def id_in_frames(id, camera_id):
     return average_dominant_color
 
 
+def evaluation(first, second):
+    print("evaluate")
+    difference = abs(first - second)
+
+    # TODO check 10 is ok or not
+    if difference < 10:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
@@ -151,10 +234,7 @@ if __name__ == '__main__':
     average_all_colors = []
     cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
 
-
     # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.m4v")
-
-
 
     # for i in range(1, 18):
     #     extract_big_pedestrians(i)
@@ -162,16 +242,29 @@ if __name__ == '__main__':
     # for i in range(1, 18):
     #     extract_little_pedestrians(i)
 
-    file = open("colors.txt", "a")
-    camera_id = 22
-    for i in range(1, 18):
-        average_color = id_in_frames(i, camera_id)
-        average_all_colors.append((i, average_color))
-        id_camera_color.append((camera_id, i, average_color))
+    # file = open("colors.txt", "a")
+    # camera_id = 22
 
-    file.write(str(id_camera_color)+"\n")
-    print(average_all_colors)
-    print(id_camera_color)
-    file.close()
+    # for i in range(1, 18):
+    #     average_color = id_in_frames(i, camera_id)
+    #     average_all_colors.append((i, average_color))
+    #     id_camera_color.append((camera_id, i, average_color))
 
+    # file.write(str(id_camera_color)+"\n")
+    # file.close()
 
+    dc = calculate_median_cut_RGB("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
+    hist = calculate_histogram("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
+    mf = calculate_most_frequent_color("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
+    print(dc)
+    print(hist)
+    print(mf)
+
+    hh1 = hue_from_rgb(dc)
+    hh2 = hue_from_rgb(mf)
+    print(hh1)
+    print(hh2)
+
+    same = evaluation(hh1[0], hh2[0])
+
+    print(same)
