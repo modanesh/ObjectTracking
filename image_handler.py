@@ -179,6 +179,7 @@ def hue_from_image(path):
 
 def hue_from_rgb(colors):
     red, green, blue = colors
+    print("red")
     print(red)
     Hdat = []
     Sdat = []
@@ -227,7 +228,7 @@ def evaluation(first, second):
 
 if __name__ == '__main__':
 
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.txt", "r")
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", "r")
     lines = ann_file.readlines()
     id_camera_color = []
     big_box_ids = []
@@ -236,10 +237,10 @@ if __name__ == '__main__':
 
     # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.m4v")
 
-    # for i in range(1, 18):
+    # for i in range(1, 11):
     #     extract_big_pedestrians(i)
 
-    # for i in range(1, 18):
+    # for i in range(1, 11):
     #     extract_little_pedestrians(i)
 
     # file = open("colors.txt", "a")
@@ -253,15 +254,23 @@ if __name__ == '__main__':
     # file.write(str(id_camera_color)+"\n")
     # file.close()
 
-    dc = calculate_median_cut_RGB("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
-    hist = calculate_histogram("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
-    mf = calculate_most_frequent_color("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
+    # TODO: compare these 3 methods
+    # works best
+    dc = calculate_median_cut_RGB("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
+
+    hist = calculate_histogram("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
+
+    mf = calculate_most_frequent_color("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
+
     print(dc)
     print(hist)
     print(mf)
 
     hh1 = hue_from_rgb(dc)
+
     hh2 = hue_from_rgb(mf)
+
+    print("eh")
     print(hh1)
     print(hh2)
 
