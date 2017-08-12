@@ -23,7 +23,7 @@ def extract_frames(path):
     while success:
         success,image = vidcap.read()
         print('Read a new frame: ', success)
-        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/frames/frame%d.jpeg" % count, image)
+        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/frames/frame%d.jpeg" % count, image)
         count += 1
 
 
@@ -89,11 +89,6 @@ def extract_little_pedestrians(id):
                         pedestrian_width = lines[line].split("\t")[7]
                         pedestrian_height = lines[line].split("\t")[8]
                         frame_number = lines[line].split("\t")[10]
-
-                        print(line)
-                        print(lines[line].split("\t")[3])
-                        print(str(big_box_ids))
-                        print(lines[line].split("\t")[3] not in str(big_box_ids))
 
                         img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/frames/frame%d.jpeg" % int(frame_number))
 
@@ -228,20 +223,20 @@ def evaluation(first, second):
 
 if __name__ == '__main__':
 
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", "r")
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.txt", "r")
     lines = ann_file.readlines()
     id_camera_color = []
     big_box_ids = []
     average_all_colors = []
     cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
 
-    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.m4v")
+    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/12.m4v")
 
-    # for i in range(1, 11):
-    #     extract_big_pedestrians(i)
+    for i in range(1, 19):
+        extract_big_pedestrians(i)
 
-    # for i in range(1, 11):
-    #     extract_little_pedestrians(i)
+    for i in range(1, 19):
+        extract_little_pedestrians(i)
 
     # file = open("colors.txt", "a")
     # camera_id = 22
@@ -254,26 +249,11 @@ if __name__ == '__main__':
     # file.write(str(id_camera_color)+"\n")
     # file.close()
 
-    # TODO: compare these 3 methods
-    # works best
-    dc = calculate_median_cut_RGB("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
 
-    hist = calculate_histogram("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
-
-    mf = calculate_most_frequent_color("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_16_12478.jpg")
-
-    print(dc)
-    print(hist)
-    print(mf)
-
-    hh1 = hue_from_rgb(dc)
-
-    hh2 = hue_from_rgb(mf)
-
-    print("eh")
-    print(hh1)
-    print(hh2)
-
-    same = evaluation(hh1[0], hh2[0])
-
-    print(same)
+    # dc = calculate_median_cut_RGB("")
+    #
+    # hh1 = hue_from_rgb(dc)
+    #
+    # same = evaluation(hh1[0], hh2[0])
+    #
+    # print(same)
