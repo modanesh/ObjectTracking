@@ -1,3 +1,5 @@
+import glob
+
 from PIL import Image, ImageEnhance
 from skimage import io
 import numpy as np
@@ -7,14 +9,14 @@ import os
 
 
 def cropped_frames_bg():
-    for id in range(1, 18):
+    for id in range(1, 11):
     # id = 43
         #TODO
-        annotation_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.txt", 'r')
+        annotation_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", 'r')
         lines = annotation_file.readlines()
 
         # TODO
-        bg_path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/Background/22.png"
+        bg_path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/Background/19.png"
         bg_img = Image.open(bg_path)
         id_frames = []
         count = 0
@@ -39,44 +41,62 @@ def cropped_frames_bg():
                         cropped_img2 = cropped_img.crop((0, shirt, width, shirt * 3))
 
                         # TODO
-                        cropped_img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/background_removed/background_removed_"+str(id)+"_"+lines[line].split("\t")[10]+".jpg")
+                        cropped_img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/background/background_removed_"+str(id)+"_"+lines[line].split("\t")[10]+".jpg")
 
                         count += 1
 
 
 
-background = cv2.imread("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_bg.png")
-foreground = cv2.imread("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/cropped_frame_1_0.jpg")
 
-fg = cv2.subtract(background, foreground)
+def extract_foreground(background_path, foreground_path):
+    background = cv2.imread(background_path)
+    foreground = cv2.imread(foreground_path)
 
-cv2.imwrite("3.png", fg)
+    fg = cv2.subtract(background, foreground)
+
+    cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/temp/3.png", fg)
 
 
-im = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/3.png")
+    im = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/temp/3.png")
 
-scale_value = 2
-contrast = ImageEnhance.Contrast(im)
-contrast_applied = contrast.enhance(scale_value)
+    scale_value = 2
+    contrast = ImageEnhance.Contrast(im)
+    contrast_applied = contrast.enhance(scale_value)
 
-pixels = contrast_applied.getdata()
+    pixels = contrast_applied.getdata()
 
-black_n_white = []
+    black_n_white = []
 
-for pixel in pixels:
-    if pixel == (0, 0, 0):
-        black_n_white.append(pixel)
-    else:
-        black_n_white.append((255, 255, 255))
+    for pixel in pixels:
+        if pixel == (0, 0, 0):
+            black_n_white.append(pixel)
+        else:
+            black_n_white.append((255, 255, 255))
 
-mask = Image.new("RGB", (60, 58))
-mask.putdata(black_n_white)
-mask.save('mask.jpg')
+    mask_shape = foreground.shape
+    mask = Image.new("RGB", (mask_shape[1], mask_shape[0]))
+    mask.putdata(black_n_white)
+    mask.save('/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/temp/mask.jpg')
 
-mask = cv2.imread("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/mask.jpg")
+    mask = cv2.imread("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/temp/mask.jpg")
 
-mask2 = np.where((mask < 200), 0, 1).astype('uint8')
+    mask2 = np.where((mask < 200), 0, 1).astype('uint8')
 
-background_removed = foreground * mask2
+    background_removed = foreground * mask2
 
-cv2.imwrite("background_removed.jpg", background_removed)
+    filename = foreground_path.split("/")[-1]
+    cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/foreground/"+filename, background_removed)
+
+
+
+if __name__ == '__main__':
+
+    # cropped_frames_bg()
+
+    count = 0
+    bg_files = glob.glob("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/background/*.jpg")
+    fg_files = glob.glob("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/cropped_frames/*.jpg")
+    for i in range(0, len(bg_files)):
+        print(bg_files[i])
+        print(fg_files[i])
+        extract_foreground(bg_files[i], fg_files[i])
