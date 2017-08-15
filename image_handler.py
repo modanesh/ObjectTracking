@@ -23,7 +23,7 @@ def extract_frames(path):
     while success:
         success,image = vidcap.read()
         print('Read a new frame: ', success)
-        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/frames/frame%d.jpeg" % count, image)
+        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/frames/frame%d.jpeg" % count, image)
         count += 1
 
 
@@ -51,9 +51,10 @@ def extract_big_pedestrians(id):
                     print("line: " + str(line))
                     print("id: " + str(id))
                     print("fn: " + str(frame_number))
+                    print("h: " + str(lines[line].split("\t")[7]))
 
 
-                    img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/frames/frame%d.jpeg" % int(frame_number))
+                    img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/frames/frame%d.jpeg" % int(frame_number))
 
                     img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
 
@@ -61,7 +62,7 @@ def extract_big_pedestrians(id):
                     shirt = int(height/5)
                     img2 = img2.crop((0, shirt, width, shirt*3))
 
-                    img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
+                    img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
 
                     count += 1
 
@@ -83,24 +84,29 @@ def extract_little_pedestrians(id):
         if str(id) == lines[line].split("\t")[3] and count < 10:
             if lines[line].split("\t")[3] not in str(big_box_ids):
                 if lines[line].split("\t")[11] == str(1):
-                    if int(lines[line].split("\t")[7]) > 40 or int(lines[line].split("\t")[8]) > 120:
-                        pedestrian_x = lines[line].split("\t")[5]
-                        pedestrian_y = lines[line].split("\t")[6]
-                        pedestrian_width = lines[line].split("\t")[7]
-                        pedestrian_height = lines[line].split("\t")[8]
-                        frame_number = lines[line].split("\t")[10]
+                        if int(lines[line].split("\t")[7]) > 40 or int(lines[line].split("\t")[8]) > 120:
+                            pedestrian_x = lines[line].split("\t")[5]
+                            pedestrian_y = lines[line].split("\t")[6]
+                            pedestrian_width = lines[line].split("\t")[7]
+                            pedestrian_height = lines[line].split("\t")[8]
+                            frame_number = lines[line].split("\t")[10]
 
-                        img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/frames/frame%d.jpeg" % int(frame_number))
+                            print("line: " + str(line))
+                            print("id: " + str(id))
+                            print("fn: " + str(frame_number))
+                            print("h: " + str(lines[line].split("\t")[7]))
 
-                        img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
+                            img = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/frames/frame%d.jpeg" % int(frame_number))
 
-                        width, height = img2.size
-                        shirt = int(height/5)
-                        img2 = img2.crop((0, shirt, width, shirt*3))
+                            img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
 
-                        img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
+                            width, height = img2.size
+                            shirt = int(height/5)
+                            img2 = img2.crop((0, shirt, width, shirt*3))
 
-                        count += 1
+                            img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
+
+                            count += 1
 
 
 def calculate_median_cut_RGB(path):
@@ -174,8 +180,6 @@ def hue_from_image(path):
 
 def hue_from_rgb(colors):
     red, green, blue = colors
-    print("red")
-    print(red)
     Hdat = []
     Sdat = []
     Vdat = []
@@ -194,7 +198,7 @@ def id_in_frames(id, camera_id):
     :return: average dominant color of the person in 10 different frames
     """
     id_dominant_colors = []
-    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/cropped_frames/"
+    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/foreground/"
     for filename in os.listdir(path):
         # print(filename.startswith("cropped_frame_" + str(id)))
         if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
@@ -210,9 +214,9 @@ def id_in_frames(id, camera_id):
     return average_dominant_color
 
 
-def evaluation(first, second):
+def color_similarity_evaluation(first_color, second_color):
     print("evaluate")
-    difference = abs(first - second)
+    difference = abs(first_color - second_color)
 
     # TODO check 10 is ok or not
     if difference < 10:
@@ -221,39 +225,56 @@ def evaluation(first, second):
         return False
 
 
+
+def color_similarity_calculator(color_array):
+    print("ed")
+    print(color_array[0])
+    print(color_array[0][0])
+    print(color_array[0][1])
+    print(color_array[0][2])
+
+
+
+    hh1 = hue_from_rgb(color_array[0][2])
+    hh2 = hue_from_rgb(color_array[1][2])
+
+    print(hh1)
+    print(hh2)
+
+    same = color_similarity_evaluation(hh1[0], hh2[0])
+
+    print(same)
+
+
+
 if __name__ == '__main__':
 
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/22.txt", "r")
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", "r")
     lines = ann_file.readlines()
     id_camera_color = []
     big_box_ids = []
     average_all_colors = []
     cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
 
-    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/12.m4v")
+    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.m4v")
 
-    for i in range(1, 19):
-        extract_big_pedestrians(i)
+    # for i in range(1, 11):
+    #     extract_big_pedestrians(i)
 
-    for i in range(1, 19):
-        extract_little_pedestrians(i)
+    # for i in range(1, 11):
+    #     extract_little_pedestrians(i)
 
     # file = open("colors.txt", "a")
-    # camera_id = 22
-
-    # for i in range(1, 18):
+    # camera_id = 19
+    #
+    # for i in range(1, 11):
     #     average_color = id_in_frames(i, camera_id)
     #     average_all_colors.append((i, average_color))
     #     id_camera_color.append((camera_id, i, average_color))
-
+    #
     # file.write(str(id_camera_color)+"\n")
     # file.close()
+    #
+    #
+    # color_similarity_calculator(id_camera_color)
 
-
-    # dc = calculate_median_cut_RGB("")
-    #
-    # hh1 = hue_from_rgb(dc)
-    #
-    # same = evaluation(hh1[0], hh2[0])
-    #
-    # print(same)
