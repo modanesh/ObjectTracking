@@ -1,4 +1,5 @@
 import colorsys
+import re
 from collections import Counter
 from PIL import Image, ImageDraw
 import cv2
@@ -6,7 +7,6 @@ from colorthief import ColorThief
 from numpy import mean
 import os
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 
@@ -215,8 +215,8 @@ def id_in_frames(id, camera_id):
 
 
 def color_similarity_evaluation(first_color, second_color):
-    print("evaluate")
     difference = abs(first_color - second_color)
+    print(str(difference))
 
     # TODO check 10 is ok or not
     if difference < 10:
@@ -226,24 +226,39 @@ def color_similarity_evaluation(first_color, second_color):
 
 
 
-def color_similarity_calculator(color_array):
-    print("ed")
-    print(color_array[0])
-    print(color_array[0][0])
-    print(color_array[0][1])
-    print(color_array[0][2])
+def color_similarity_calculator(first_color, second_color):
 
-
-
-    hh1 = hue_from_rgb(color_array[0][2])
-    hh2 = hue_from_rgb(color_array[1][2])
-
-    print(hh1)
-    print(hh2)
+    hh1 = hue_from_rgb(first_color)
+    hh2 = hue_from_rgb(second_color)
+    # hh1 = hue_from_rgb((43, 46, 56))
+    # hh2 = hue_from_rgb((51, 58, 81))
 
     same = color_similarity_evaluation(hh1[0], hh2[0])
 
-    print(same)
+
+def extract_info():
+    colors_array = []
+    for camera in cameras:
+        colors_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_"+str(camera)+".txt")
+        for line in colors_file.readlines():
+            tmp = line.split(",")
+
+            color_evaluator = [int(s) for s in re.findall(r'\d+', tmp[2])][0]
+
+            cam_id = [int(s) for s in re.findall(r'\d+', tmp[0])][0]
+            id = [int(s) for s in re.findall(r'\d+', tmp[1])][0]
+
+            if color_evaluator < 255:
+                r = [int(s) for s in re.findall(r'\d+', tmp[2])][0]
+                g = [int(s) for s in re.findall(r'\d+', tmp[3])][0]
+                b = [int(s) for s in re.findall(r'\d+', tmp[4])][0]
+                color = (r, g, b)
+
+            else:
+                color = (-1, -1, -1)
+
+            colors_array.append((cam_id, id, color))
+    return colors_array
 
 
 
@@ -264,17 +279,29 @@ if __name__ == '__main__':
     # for i in range(1, 11):
     #     extract_little_pedestrians(i)
 
-    # file = open("colors.txt", "a")
-    # camera_id = 19
+    # file = open("colors_22.txt", "w")
+    # camera_id = 22
     #
-    # for i in range(1, 11):
+    # for i in range(1, 18):
     #     average_color = id_in_frames(i, camera_id)
     #     average_all_colors.append((i, average_color))
     #     id_camera_color.append((camera_id, i, average_color))
+    #     www = (camera_id, i, average_color)
+    #     print(www)
+    #     file.write(str(www)+"\n")
     #
-    # file.write(str(id_camera_color)+"\n")
     # file.close()
-    #
+
     #
     # color_similarity_calculator(id_camera_color)
+
+    # tmp = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
+    # color_info = extract_info()
+    #
+    # for i in range(0, len(color_info)):
+    #     if color_info[i][0] == 21 and color_info[i][2][0] > 0:
+    #         for j in range(0, len(color_info)):
+    #             if color_info[j][0] == 13 and color_info[j][2][0] > 0:
+    #                 print(color_info[i][0],",", color_info[i][1], "ttt", color_info[j][0],",", color_info[j][1], "ttt", color_info[i][2], "ttt", color_info[j][2])
+    #                 color_similarity_calculator(color_info[i][2], color_info[j][2])
 
