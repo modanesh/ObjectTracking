@@ -164,6 +164,11 @@ def calculate_most_frequent_color(path):
 
 
 def hue_from_image(path):
+    """
+    calculates the HUE from an image.
+    :param path: path to the image
+    :return: HUE of the image
+    """
     img = Image.open(path)
     r,g,b = img.split()
     Hdat = []
@@ -179,6 +184,11 @@ def hue_from_image(path):
 
 
 def hue_from_rgb(colors):
+    """
+    calculates the HUE from a color in RGB
+    :param colors: (R, G, B)
+    :return: HUE of the color
+    """
     red, green, blue = colors
     Hdat = []
     Sdat = []
@@ -198,7 +208,7 @@ def id_in_frames(id, camera_id):
     :return: average dominant color of the person in 10 different frames
     """
     id_dominant_colors = []
-    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/foreground/"
+    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/middle_frames/"
     for filename in os.listdir(path):
         # print(filename.startswith("cropped_frame_" + str(id)))
         if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
@@ -215,6 +225,12 @@ def id_in_frames(id, camera_id):
 
 
 def color_similarity_evaluation(first_color, second_color):
+    """
+    Calculates if two colors are the same or not. Here, the threshold is 10.
+    :param first_color: first color to be compared
+    :param second_color: second color to be compared
+    :return: a boolean declaring if two colors are the same
+    """
     difference = abs(first_color - second_color)
     print(str(difference))
 
@@ -225,8 +241,13 @@ def color_similarity_evaluation(first_color, second_color):
         return False
 
 
-
 def color_similarity_calculator(first_color, second_color):
+    """
+    does nothing important :D
+    :param first_color:
+    :param second_color:
+    :return:
+    """
 
     hh1 = hue_from_rgb(first_color)
     hh2 = hue_from_rgb(second_color)
@@ -237,9 +258,13 @@ def color_similarity_calculator(first_color, second_color):
 
 
 def extract_info():
+    """
+    extracts all the data saved in colors_x files.
+    :return: colors array which has a structure like this: (camera id, person id, (r, g, b)) e.g. (1, 1, (142, 135, 149))
+    """
     colors_array = []
     for camera in cameras:
-        colors_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_"+str(camera)+".txt")
+        colors_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_middle/colors_"+str(camera)+".txt")
         for line in colors_file.readlines():
             tmp = line.split(",")
 
@@ -262,6 +287,24 @@ def extract_info():
 
 
 
+def crop_middle():
+    for camera in cameras:
+        for filename in os.listdir("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/" + str(camera) + "/cropped_frames/"):
+            if filename.endswith(".jpg"):
+                print("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/" + str(camera) + "/cropped_frames/"+filename)
+                image = Image.open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/" + str(camera) + "/cropped_frames/" + filename)
+
+                height, width = image.size
+
+                middle = image.crop((int(height/3), int(width/3), 2*int(height/3), 2*int(width/3)))
+
+                middle.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/" + str(camera) + "/middle_frames/" + filename)
+
+
+
+
+
+
 if __name__ == '__main__':
 
     ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", "r")
@@ -279,7 +322,7 @@ if __name__ == '__main__':
     # for i in range(1, 11):
     #     extract_little_pedestrians(i)
 
-    # file = open("colors_22.txt", "w")
+    # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_middle/colors_22.txt", "w")
     # camera_id = 22
     #
     # for i in range(1, 18):
@@ -292,16 +335,18 @@ if __name__ == '__main__':
     #
     # file.close()
 
-    #
-    # color_similarity_calculator(id_camera_color)
 
-    # tmp = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
-    # color_info = extract_info()
-    #
-    # for i in range(0, len(color_info)):
-    #     if color_info[i][0] == 21 and color_info[i][2][0] > 0:
-    #         for j in range(0, len(color_info)):
-    #             if color_info[j][0] == 13 and color_info[j][2][0] > 0:
-    #                 print(color_info[i][0],",", color_info[i][1], "ttt", color_info[j][0],",", color_info[j][1], "ttt", color_info[i][2], "ttt", color_info[j][2])
-    #                 color_similarity_calculator(color_info[i][2], color_info[j][2])
 
+    color_info = extract_info()
+
+    # print(color_info)
+
+    for i in range(0, len(color_info)):
+        if color_info[i][0] == 21 and color_info[i][2][0] > 0:
+            for j in range(0, len(color_info)):
+                if color_info[j][0] == 13 and color_info[j][2][0] > 0:
+                    # print(color_info[i][0],",", color_info[i][1], "\t", color_info[j][0],",", color_info[j][1])
+                    print(color_info[i][2], "\t", color_info[j][2])
+                    # color_similarity_calculator(color_info[i][2], color_info[j][2])
+
+    # crop_middle()
