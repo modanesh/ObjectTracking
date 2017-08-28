@@ -4,7 +4,7 @@ from collections import Counter
 from PIL import Image, ImageDraw
 import cv2
 from colorthief import ColorThief
-from numpy import mean
+from numpy import mean, sqrt
 import os
 import numpy as np
 
@@ -29,7 +29,8 @@ def extract_frames(path):
 
 def extract_big_pedestrians(id):
     """
-    extract pedestrians with BIG BOUNDING BOXES from images using a line of annotation file. saves cropped frames containing only the upper-body of pedestrians.
+    extract pedestrians with BIG BOUNDING BOXES from images using a line in the annotation file. saves cropped frames
+    containing only the upper-body of pedestrians.
 
     :param id: person id in the annotation file
     """
@@ -73,7 +74,8 @@ def extract_big_pedestrians(id):
 
 def extract_little_pedestrians(id):
     """
-        extract pedestrians with LITTLE BOUNDING BOXES from images using a line of annotation file. saves cropped frames containing only the upper-body of pedestrians.
+        extract pedestrians with LITTLE BOUNDING BOXES from images using a line in the annotation file.
+        saves cropped frames containing only the upper-body of pedestrians.
 
         :param id: person id in the annotation file
         """
@@ -107,6 +109,58 @@ def extract_little_pedestrians(id):
                             img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/cropped_frames/cropped_frame" + "_" + str(id) + "_" + frame_number + ".jpg")
 
                             count += 1
+
+
+
+
+
+def extract_better_pedestrians(id, path):
+    """
+    extract pedestrians with MORE ACCURATE BOUNDING BOXES from images using a line in the annotation file.
+    saves cropped frames containing only the upper-body of pedestrians.
+
+    :param id: person id in the annotation file
+    """
+    bbox_size = []
+
+    # loop over all the persons and crop their photo
+    for line in range(3, len(lines)):
+
+        if str(id) == lines[line].split("\t")[3]:
+            if lines[line].split("\t")[11] == str(1):
+                x = int(lines[line].split("\t")[5])
+                y = int(lines[line].split("\t")[6])
+                width = int(lines[line].split("\t")[7])
+                height = int(lines[line].split("\t")[8])
+                frame = int(lines[line].split("\t")[10])
+                area = width * height
+                bbox_size.append((x, y, width, height, line, frame, area))
+
+    sorted_bbox = sorted(bbox_size, key=lambda l: l[6], reverse=True)
+
+    for index in range(0, len(sorted_bbox)):
+        if sorted_bbox[index][6] > 6500 and index < 10:
+            print(sorted_bbox[index][6])
+            pedestrian_x = sorted_bbox[index][0]
+            pedestrian_y = sorted_bbox[index][1]
+            pedestrian_width = sorted_bbox[index][2]
+            pedestrian_height = sorted_bbox[index][3]
+            frame_number = sorted_bbox[index][5]
+
+            img = Image.open(path + "/frames/frame%d.jpeg" % frame_number)
+
+            img2 = img.crop((int(pedestrian_x), int(pedestrian_y), int(pedestrian_width)+int(pedestrian_x), int(pedestrian_height)+int(pedestrian_y)))
+
+            half_width, half_height = img2.size
+            shirt = int(half_height/5)
+            img2 = img2.crop((0, shirt, half_width, shirt*3))
+
+            img2.save(path + "/better_cropped_frames/better_cropped_frame" + "_" + str(id) + "_" + str(frame_number) + ".jpg")
+
+
+
+
+
 
 
 def calculate_median_cut_RGB(path):
@@ -214,6 +268,7 @@ def id_in_frames(id, camera_id):
         if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
             print(filename)
             dominant_color = calculate_median_cut_RGB(path+filename)
+            print(dominant_color)
             id_dominant_colors.append(dominant_color)
 
     average_dominant_color = mean(id_dominant_colors, axis=0).astype(int)
@@ -234,7 +289,7 @@ def color_similarity_evaluation(first_color, second_color):
     difference = abs(first_color - second_color)
     print(str(difference))
 
-    # TODO check 10 is ok or not
+    # TODO: find the appropriate threshold
     if difference < 10:
         return True
     else:
@@ -303,16 +358,21 @@ def crop_middle():
 
 
 
+def rgb_euclidean_distance(first_color, second_color):
+    # TODO: find the appropriate threshold
+
+    distance = sqrt(pow((first_color[0] - second_color[0]), 2) + pow((first_color[1] - second_color[1]), 2) + pow((first_color[2] - second_color[2]), 2))
+    return distance
+
 
 
 if __name__ == '__main__':
 
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", "r")
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/12.txt", "r")
     lines = ann_file.readlines()
-    id_camera_color = []
+    cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
     big_box_ids = []
     average_all_colors = []
-    cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
 
     # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.m4v")
 
@@ -328,25 +388,41 @@ if __name__ == '__main__':
     # for i in range(1, 18):
     #     average_color = id_in_frames(i, camera_id)
     #     average_all_colors.append((i, average_color))
-    #     id_camera_color.append((camera_id, i, average_color))
-    #     www = (camera_id, i, average_color)
-    #     print(www)
-    #     file.write(str(www)+"\n")
+    #     id_camera_color = (camera_id, i, average_color)
+    #     file.write(str(id_camera_color)+"\n")
     #
     # file.close()
 
 
 
-    color_info = extract_info()
+    # color_info = extract_info()
 
     # print(color_info)
 
-    for i in range(0, len(color_info)):
-        if color_info[i][0] == 21 and color_info[i][2][0] > 0:
-            for j in range(0, len(color_info)):
-                if color_info[j][0] == 13 and color_info[j][2][0] > 0:
+    # for i in range(0, len(color_info)):
+    #     if color_info[i][0] == 21 and color_info[i][2][0] > 0:
+    #         for j in range(0, len(color_info)):
+    #             if color_info[j][0] == 13 and color_info[j][2][0] > 0:
                     # print(color_info[i][0],",", color_info[i][1], "\t", color_info[j][0],",", color_info[j][1])
-                    print(color_info[i][2], "\t", color_info[j][2])
+                    # print(color_info[i][2], "\t", color_info[j][2])
                     # color_similarity_calculator(color_info[i][2], color_info[j][2])
 
     # crop_middle()
+
+    """
+    print("[(44, 28, 38), (36, 25, 35), (36, 28, 36), (36, 27, 34), (44, 31, 39), (36, 28, 36), (32, 26, 35), (32, 27, 35), (52, 34, 44), (39, 28, 44)]")
+    euc_dis = rgb_euclidean_distance((44, 28, 38), (36, 25, 35))
+    print(euc_dis)
+    euc_dis = rgb_euclidean_distance((44, 28, 38), (52, 34, 44))
+    print(euc_dis)
+
+    avc = id_in_frames(1, 1)
+    print(avc)
+    """
+
+
+
+
+    for i in range(1, 80):
+        print("-----------")
+        extract_better_pedestrians(i, path="/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12")
