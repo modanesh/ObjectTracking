@@ -11,11 +11,9 @@ import os
 def cropped_frames_bg():
     for id in range(1, 11):
     # id = 43
-        #TODO
         annotation_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", 'r')
         lines = annotation_file.readlines()
 
-        # TODO
         bg_path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/Background/19.png"
         bg_img = Image.open(bg_path)
         id_frames = []
@@ -40,7 +38,6 @@ def cropped_frames_bg():
 
                         cropped_img2 = cropped_img.crop((0, shirt, width, shirt * 3))
 
-                        # TODO
                         cropped_img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/background/background_removed_"+str(id)+"_"+lines[line].split("\t")[10]+".jpg")
 
                         count += 1
