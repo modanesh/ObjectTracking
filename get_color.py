@@ -44,11 +44,17 @@ def get_colors(infile, numcolors=10, swatchsize=20, resize=150):
 
 
 if __name__ == '__main__':
-    path = '/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/1/better_foreground/'
+    path = '/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/22/better_foreground/'
+    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_betters/colors_22.txt", "w")
     dom_color = []
     for filename in os.listdir(path):
         if filename.endswith(".jpg"):
             id = [int(s) for s in re.findall(r'\d+', filename)][0]
-            dom_color.append((1, id, get_colors(path + filename)[2]))
+            dom_color.append((22, id, get_colors(path + filename)[2]))
+            file.write(str((22, id, get_colors(path + filename)[2])) + "\n")
 
     print(dom_color)
+
+
+
+    file.close()
