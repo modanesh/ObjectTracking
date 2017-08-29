@@ -23,7 +23,7 @@ def extract_frames(path):
     while success:
         success,image = vidcap.read()
         print('Read a new frame: ', success)
-        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/frames/frame%d.jpeg" % count, image)
+        cv2.imwrite("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/15/frames/frame%d.jpeg" % count, image)
         count += 1
 
 
@@ -139,7 +139,7 @@ def extract_better_pedestrians(id, path):
     sorted_bbox = sorted(bbox_size, key=lambda l: l[6], reverse=True)
 
     for index in range(0, len(sorted_bbox)):
-        if sorted_bbox[index][6] > 6500 and index < 10:
+        if sorted_bbox[index][6] > 6500 and index < 1:
             print(sorted_bbox[index][6])
             pedestrian_x = sorted_bbox[index][0]
             pedestrian_y = sorted_bbox[index][1]
@@ -174,6 +174,9 @@ def calculate_median_cut_RGB(path):
     color_thief = ColorThief(path)
     # get the dominant color
     dominant_color = color_thief.get_color(quality=1)
+
+    palette = color_thief.get_palette(color_count=6)
+    print(palette)
 
     return dominant_color
 
@@ -262,10 +265,11 @@ def id_in_frames(id, camera_id):
     :return: average dominant color of the person in 10 different frames
     """
     id_dominant_colors = []
-    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/middle_frames/"
+    # path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/middle_frames/"
+    path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(camera_id)+"/better_foreground/"
     for filename in os.listdir(path):
         # print(filename.startswith("cropped_frame_" + str(id)))
-        if filename.startswith("cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
+        if filename.startswith("better_cropped_frame_" + str(id) + "_") and filename.endswith(".jpg"):
             print(filename)
             dominant_color = calculate_median_cut_RGB(path+filename)
             print(dominant_color)
@@ -368,19 +372,24 @@ def rgb_euclidean_distance(first_color, second_color):
 
 if __name__ == '__main__':
 
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12/12.txt", "r")
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/2/2.txt", "r")
     lines = ann_file.readlines()
     cameras = [1, 2, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22]
     big_box_ids = []
     average_all_colors = []
 
-    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.m4v")
+    # extract_frames("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/15/15.m4v")
 
     # for i in range(1, 11):
     #     extract_big_pedestrians(i)
 
     # for i in range(1, 11):
     #     extract_little_pedestrians(i)
+
+    for i in range(1, 80):
+        print("-----------")
+        print(i)
+        extract_better_pedestrians(i, path="/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/2")
 
     # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_middle/colors_22.txt", "w")
     # camera_id = 22
@@ -409,8 +418,10 @@ if __name__ == '__main__':
 
     # crop_middle()
 
-    """
+"""
     print("[(44, 28, 38), (36, 25, 35), (36, 28, 36), (36, 27, 34), (44, 31, 39), (36, 28, 36), (32, 26, 35), (32, 27, 35), (52, 34, 44), (39, 28, 44)]")
+    print("[(179, 170, 185), (42, 31, 40), (42, 33, 45), (42, 34, 45), (42, 32, 40), (40, 32, 40), (39, 31, 40), (39, 32, 40), (39, 31, 40), (41, 32, 42)]")
+    print("[(54, 42, 49), (53, 40, 48), (52, 40, 52), (168, 166, 179), (52, 40, 48), (172, 168, 176), (165, 161, 168), (169, 167, 173), (49, 38, 47), (50, 38, 49)]")
     euc_dis = rgb_euclidean_distance((44, 28, 38), (36, 25, 35))
     print(euc_dis)
     euc_dis = rgb_euclidean_distance((44, 28, 38), (52, 34, 44))
@@ -418,11 +429,7 @@ if __name__ == '__main__':
 
     avc = id_in_frames(1, 1)
     print(avc)
-    """
 
 
+"""
 
-
-    for i in range(1, 80):
-        print("-----------")
-        extract_better_pedestrians(i, path="/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/12")
