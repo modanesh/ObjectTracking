@@ -291,13 +291,8 @@ def color_similarity_evaluation(first_color, second_color):
     :return: a boolean declaring if two colors are the same
     """
     difference = abs(first_color - second_color)
-    print(str(difference))
 
-    # TODO: find the appropriate threshold
-    if difference < 10:
-        return True
-    else:
-        return False
+    return str(difference)
 
 
 def color_similarity_calculator(first_color, second_color):
@@ -313,7 +308,9 @@ def color_similarity_calculator(first_color, second_color):
     # hh1 = hue_from_rgb((43, 46, 56))
     # hh2 = hue_from_rgb((51, 58, 81))
 
-    same = color_similarity_evaluation(hh1[0], hh2[0])
+    diff = color_similarity_evaluation(hh1[0], hh2[0])
+
+    return diff
 
 
 def extract_info():
@@ -323,7 +320,7 @@ def extract_info():
     """
     colors_array = []
     for camera in cameras:
-        colors_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_middle/colors_"+str(camera)+".txt")
+        colors_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_betters/colors_"+str(camera)+".txt")
         for line in colors_file.readlines():
             tmp = line.split(",")
 
@@ -342,6 +339,9 @@ def extract_info():
                 color = (-1, -1, -1)
 
             colors_array.append((cam_id, id, color))
+
+    colors_array = sorted(colors_array, key=lambda l: (l[0],l[1]), reverse=False)
+
     return colors_array
 
 
@@ -386,10 +386,10 @@ if __name__ == '__main__':
     # for i in range(1, 11):
     #     extract_little_pedestrians(i)
 
-    for i in range(1, 80):
-        print("-----------")
-        print(i)
-        extract_better_pedestrians(i, path="/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/2")
+    # for i in range(1, 80):
+    #     print("-----------")
+    #     print(i)
+    #     extract_better_pedestrians(i, path="/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/2")
 
     # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/colors_from_middle/colors_22.txt", "w")
     # camera_id = 22
@@ -404,17 +404,17 @@ if __name__ == '__main__':
 
 
 
-    # color_info = extract_info()
+    color_info = extract_info()
 
     # print(color_info)
 
-    # for i in range(0, len(color_info)):
-    #     if color_info[i][0] == 21 and color_info[i][2][0] > 0:
-    #         for j in range(0, len(color_info)):
-    #             if color_info[j][0] == 13 and color_info[j][2][0] > 0:
-                    # print(color_info[i][0],",", color_info[i][1], "\t", color_info[j][0],",", color_info[j][1])
+    for i in range(0, len(color_info)):
+        if color_info[i][0] == 21 and color_info[i][2][0] > 0:
+            for j in range(0, len(color_info)):
+                if color_info[j][0] == 13 and color_info[j][2][0] > 0:
+                    diffrences = color_similarity_calculator(color_info[i][2], color_info[j][2])
+                    print(color_info[i][0],",", color_info[i][1], "\t", color_info[j][0],",", color_info[j][1], "\t", color_info[i][2], "\t", color_info[j][2], "\t", diffrences)
                     # print(color_info[i][2], "\t", color_info[j][2])
-                    # color_similarity_calculator(color_info[i][2], color_info[j][2])
 
     # crop_middle()
 
