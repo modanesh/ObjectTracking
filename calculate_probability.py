@@ -9,13 +9,98 @@ same_hues = np.array((17, 34, 185, 27, 160, 226, 14, 11, 13, 12, 16, 68, 10, 28,
 same_des = np.array((15, 30, 19, 11, 22, 21, 10, 11, 12, 6, 13, 15, 25, 9, 6, 9, 6, 25, 54, 18, 10, 7, 37, 8, 10, 14, 5, 12, 11, 6, 16, 5, 2, 26, 13, 33, 24, 37, 1, 8, 29, 43, 48, 23, 51, 15, 35, 17, 25, 1, 13, 4, 6, 5, 11, 39, 9, 10, 9, 29, 31, 0, 13, 1, 4, 10))
 
 
+def time():
+    for i in range(0, len(not_same_times)):
+        if not_same_times[i] < time_threshold:
+            not_same_detection.append(0)
+
+        elif not_same_times[i] >= time_threshold:
+            not_same_detection.append(1)
+
+    true_negative = sum(not_same_detection) / len(not_same_times) * 100
+    false_positive = 100 - true_negative
+
+    for i in range(0, len(same_times)):
+        if same_times[i] < time_threshold:
+            same_detection.append(1)
+
+        elif same_times[i] >= time_threshold:
+            same_detection.append(0)
+
+    true_positive = sum(same_detection) / len(same_times) * 100
+    false_negative = 100 - true_positive
+
+    # print(round(true_positive, 2))
+    # print(round(true_negative, 2))
+    # print(round(false_positive, 2))
+    # print(round(false_negative, 2))
+    print(str(round(true_positive, 2)) + "\t" + str(round(true_negative, 2)) + "\t" + str(round(false_positive, 2)) + "\t" + str(round(false_negative, 2)))
+
+
+def de():
+    for i in range(0, len(not_same_times)):
+        if not_same_des[i] < de_threshold:
+            not_same_detection.append(0)
+
+        elif not_same_des[i] >= de_threshold:
+            not_same_detection.append(1)
+
+    true_negative = sum(not_same_detection)/len(not_same_times) * 100
+    false_positive = 100 - true_negative
+
+    for i in range(0, len(same_times)):
+        if same_des[i] < de_threshold:
+            same_detection.append(1)
+
+        elif same_des[i] >= de_threshold:
+            same_detection.append(0)
+
+    true_positive = sum(same_detection)/len(same_times) * 100
+    false_negative = 100 - true_positive
+
+
+    # print(round(true_positive, 2))
+    # print(round(true_negative, 2))
+    # print(round(false_positive, 2))
+    # print(round(false_negative, 2))
+    print(str(round(true_positive, 2)) + "\t" + str(round(true_negative, 2)) + "\t" + str(round(false_positive, 2)) + "\t" + str(round(false_negative, 2)))
+
+def hue():
+    for i in range(0, len(not_same_times)):
+        if not_same_hues[i] < hue_threshold:
+            not_same_detection.append(0)
+
+        elif not_same_hues[i] >= hue_threshold:
+            not_same_detection.append(1)
+
+    true_negative = sum(not_same_detection) / len(not_same_times) * 100
+    false_positive = 100 - true_negative
+
+    for i in range(0, len(same_times)):
+        if same_hues[i] < hue_threshold:
+            same_detection.append(1)
+
+        elif same_hues[i] >= hue_threshold:
+            same_detection.append(0)
+
+    true_positive = sum(same_detection) / len(same_times) * 100
+    false_negative = 100 - true_positive
+
+    # print(round(true_positive, 2))
+    # print(round(true_negative, 2))
+    # print(round(false_positive, 2))
+    # print(round(false_negative, 2))
+    print(str(round(true_positive, 2)) + "\t" + str(round(true_negative, 2)) + "\t" + str(
+        round(false_positive, 2)) + "\t" + str(round(false_negative, 2)))
+
+
 def time_de():
     for i in range(0, len(not_same_times)):
         if not_same_times[i] < time_threshold and not_same_des[i] < de_threshold:
-            not_same_detection.append(1)
+            not_same_detection.append(0)
 
         elif not_same_times[i] >= time_threshold or not_same_des[i] >= de_threshold:
-            not_same_detection.append(0)
+            not_same_detection.append(1)
 
     true_negative = sum(not_same_detection)/len(not_same_times) * 100
     false_positive = 100 - true_negative
@@ -40,10 +125,10 @@ def time_de():
 def time_hue():
     for i in range(0, len(not_same_times)):
         if not_same_times[i] < time_threshold and not_same_hues[i] < hue_threshold:
-            not_same_detection.append(1)
+            not_same_detection.append(0)
 
         elif not_same_times[i] >= time_threshold or not_same_hues[i] >= hue_threshold:
-            not_same_detection.append(0)
+            not_same_detection.append(1)
 
     true_negative = sum(not_same_detection) / len(not_same_times) * 100
     false_positive = 100 - true_negative
@@ -58,20 +143,36 @@ def time_hue():
     true_positive = sum(same_detection) / len(same_times) * 100
     false_negative = 100 - true_positive
 
-    print(round(true_positive, 2))
-    print(round(true_negative, 2))
-    print(round(false_positive, 2))
-    print(round(false_negative, 2))
-    # return round(true_positive, 2), round(true_negative, 2), round(false_positive, 2), round(false_negative, 2)
+    # print(round(true_positive, 2))
+    # print(round(true_negative, 2))
+    # print(round(false_positive, 2))
+    # print(round(false_negative, 2))
+    print(str(round(true_positive, 2)) + "\t" + str(round(true_negative, 2)) + "\t" + str(round(false_positive, 2)) + "\t" + str(round(false_negative, 2)))
+
+
 
 
 if __name__ == '__main__':
-    time_threshold = 45
-    hue_threshold = 20
+    # time_threshold = 45
+    # hue_threshold = 20
     de_threshold = 12
 
-    same_detection = []
-    not_same_detection = []
-    time_hue()
+    # time_hue()
     # time_de()
+    k = 0
+    while k < 665:
+        l = 0
+        while l < 350:
+            same_detection = []
+            not_same_detection = []
+            time_threshold = k
+            hue_threshold = l
 
+            time_hue()
+
+            # print(str(k) + "\t" + str(l))
+
+            l += 5
+
+
+        k += 5
