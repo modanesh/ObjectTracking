@@ -116,10 +116,12 @@ def time_de():
     false_negative = 100 - true_positive
 
 
-    print(round(true_positive, 2))
-    print(round(true_negative, 2))
-    print(round(false_positive, 2))
-    print(round(false_negative, 2))
+    # print(round(true_positive, 2))
+    # print(round(true_negative, 2))
+    # print(round(false_positive, 2))
+    # print(round(false_negative, 2))
+    print(str(round(true_positive, 2)) + "\t" + str(round(true_negative, 2)) + "\t" + str(
+        round(false_positive, 2)) + "\t" + str(round(false_negative, 2)))
 
 
 def time_hue():
@@ -153,11 +155,18 @@ def time_hue():
 
 
 if __name__ == '__main__':
-    not_same_detection = []
-    same_detection = []
-    time_threshold = 45
-    hue_threshold = 20
-    de_threshold = 12
+    time_thresholds = (20, 50, 55, 60, 65, 105, 300)
+    hue_thresholds = (15, 20, 30, 45, 90, 120, 230)
+    de_thresholds = (10, 12, 14, 16, 28)
 
-    time_hue()
+    for time_threshold in time_thresholds:
+        for hue_threshold in hue_thresholds:
+            not_same_detection = []
+            same_detection = []
+            # print(str(time_threshold))
+            time_hue()
+            # time_de()
+
+
+    # time_hue()
     # time_de()
