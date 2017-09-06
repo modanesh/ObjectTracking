@@ -153,26 +153,11 @@ def time_hue():
 
 
 if __name__ == '__main__':
-    # time_threshold = 45
-    # hue_threshold = 20
+    not_same_detection = []
+    same_detection = []
+    time_threshold = 45
+    hue_threshold = 20
     de_threshold = 12
 
-    # time_hue()
+    time_hue()
     # time_de()
-    k = 0
-    while k < 665:
-        l = 0
-        while l < 350:
-            same_detection = []
-            not_same_detection = []
-            time_threshold = k
-            hue_threshold = l
-
-            time_hue()
-
-            # print(str(k) + "\t" + str(l))
-
-            l += 5
-
-
-        k += 5
