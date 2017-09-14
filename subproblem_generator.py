@@ -27,42 +27,26 @@
 import re
 
 
-def subproblem_generator(ag, sct):
+def subproblem_generator(sct):
     it = []
     ot = []
     s = []
 
-    for i in range(0, len(sct)):
-        for j in range(0, len(sct)):
-            if sct[i][5] == sct[j][4]:
-                s.append((sct[i][1], sct[i][2], sct[i][3], sct[i][4], sct[i][5], sct[j][1], sct[j][2], sct[j][3], sct[j][4], sct[j][5]))
-
-
-
-
-
-def camera_connections(camera_tracks):
-
     file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/camera_correlations.txt")
-
     correlations = []
-    subproblems = []
 
     for line in file.readlines():
-        correlations.append(([int(s) for s in re.findall(r'\d+', line)][0], [int(s) for s in re.findall(r'\d+', line)][1]))
+        if not line.startswith("#"):
+            correlations.append(([int(s) for s in re.findall(r'\d+', line)][0], [int(s) for s in re.findall(r'\d+', line)][1], [int(s) for s in re.findall(r'\d+', line)][2], [int(s) for s in re.findall(r'\d+', line)][3]))
 
-    print(correlations)
+    for i in range(0, len(sct)):
+        for j in range(0, len(sct)):
+            for k in range(0, len(correlations)):
+                if sct[i][5] == sct[j][4]:
 
-    for i in range(0, len(camera_tracks)):
-        for j in range(0, len(correlations)):
-            first_cam = correlations[j][0]
-            second_cam = correlations[j][1]
-
-            if (camera_tracks[i][0] == first_cam and camera_tracks[i][5] == second_cam) or (camera_tracks[i][0] == second_cam and camera_tracks[i][5] == first_cam):
-                subproblems.append(camera_tracks[i])
-
-
+                    if (sct[i][1] == correlations[k][0] and sct[i][3] == correlations[k][1] and sct[j][1] == correlations[k][2] and sct[j][3] == correlations[k][3]) or (sct[i][1] == correlations[k][2] and sct[i][3] == correlations[k][3] and sct[j][1] == correlations[k][0] and sct[j][3] == correlations[k][1]):
+                        s.append((sct[i], sct[j]))
 
 
 if __name__ == '__main__':
-    camera_connections()
+    subproblem_generator()
