@@ -36,4 +36,3 @@ def subproblem_generator(ag, sct):
             if sct[i][5] == sct[j][4]:
                 s.append((sct[i][1], sct[i][2], sct[i][3], sct[i][4], sct[i][5], sct[j][1], sct[j][2], sct[j][3], sct[j][4], sct[j][5]))
 
-    
