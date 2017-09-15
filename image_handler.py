@@ -363,8 +363,6 @@ def crop_middle():
 
 
 def rgb_euclidean_distance(first_color, second_color):
-    # TODO: find the appropriate threshold
-
     distance = sqrt(pow((first_color[0] - second_color[0]), 2) + pow((first_color[1] - second_color[1]), 2) + pow((first_color[2] - second_color[2]), 2))
     return distance
 
