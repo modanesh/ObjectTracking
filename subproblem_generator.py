@@ -16,8 +16,10 @@ def subproblem_generator(sct):
             for k in range(0, len(correlations)):
                 if sct[i][5] == sct[j][4]:
 
-                    if (sct[i][1] == correlations[k][0] and sct[i][3] == correlations[k][1] and sct[j][1] == correlations[k][2] and sct[j][3] == correlations[k][3]) or (sct[i][1] == correlations[k][2] and sct[i][3] == correlations[k][3] and sct[j][1] == correlations[k][0] and sct[j][3] == correlations[k][1]):
-                        s.append((sct[i], sct[j]))
+                    if sct[i][1] == correlations[k][0] and sct[i][3] == correlations[k][1] and sct[j][1] == correlations[k][2] and sct[j][3] == correlations[k][3]:
+                        s.append((0, sct[i], 1, sct[j]))
+                    elif sct[i][1] == correlations[k][2] and sct[i][3] == correlations[k][3] and sct[j][1] == correlations[k][0] and sct[j][3] == correlations[k][1]:
+                        s.append((0, sct[j], 1, sct[i]))
 
 
 if __name__ == '__main__':
