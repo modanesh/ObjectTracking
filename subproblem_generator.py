@@ -14,8 +14,8 @@ for line in file_1.readlines():
         cams_regions.append((cam_1, region_1, cam_2, region_2))
 
 
-file_2 = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/in_out.txt")
-cams_regions = []
+file_2 = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/same_in_out.txt")
+cams_inouts = []
 for line in file_2.readlines():
     if re.match(r"\(\d", line):
 
@@ -35,7 +35,10 @@ for line in file_2.readlines():
         print(in_2)
         print(out_2)
 
+        cams_inouts.append((cam_1, id_1, in_1, out_1, cam_2, id_2, in_2, out_2))
 
-        # cams_regions.append((cam_1, region_1, cam_2, region_2))
 
+
+s_v1 = []
+s_v1 = cams_regions
 
