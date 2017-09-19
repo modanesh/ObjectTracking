@@ -1,3 +1,6 @@
+input/output region of each id in each camera.
+
+
 cam 1:
 
 10      (2, 1)
