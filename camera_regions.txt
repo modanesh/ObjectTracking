@@ -1,3 +1,6 @@
+relations between the input/output regions of different cameras.
+
+
 cam #, inout, cam #, inout
 1, 1, 2, 1
 2, 3, 11, 1
