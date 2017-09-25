@@ -37,9 +37,9 @@ def extract_frame_time():
 
 
 
-def extract_inout_time(index):
-    camera_info = cameras_fps_times[index-1]
-    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(index)+".txt")
+def extract_inout_time(index, camid):
+    camera_info = cameras_fps_times[camid]
+    ann_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(index)+"/"+str(index)+".txt")
     id_times = []
     frames = []
     times = []
@@ -51,7 +51,7 @@ def extract_inout_time(index):
             frame_number = [int(s) for s in re.findall(r'\d+', line)][7]
             exists = [int(s) for s in re.findall(r'\d+', line)][8]
 
-            if id == 1 and exists == 1:
+            if exists == 1:
                 frames.append(frame_number)
 
                 seconds = math.floor(frame_number / camera_info[1])
@@ -70,18 +70,10 @@ def extract_inout_time(index):
                 else:
                     new_sec = start_sec + second
 
-
-
-
-
-                times.append((id, frame_number, start_hour, new_min, new_sec))
+                times.append((index, id, frame_number, start_hour, new_min, new_sec))
 
     print(times)
-    print(times[0])
-    print(times[-1])
-    start_end_times.append(times[0])
-    start_end_times.append(times[-1])
-    print(start_end_times)
+
 
 
 
@@ -96,6 +88,7 @@ if __name__ == '__main__':
                          (14, 25, 122700), (15, 18, 122725), (17, 25, 122700), (18, 25, 122700), (19, 25, 122700),
                          (20, 25, 122700), (21, 18, 122725), (22, 25, 122700)]
 
-    extract_frame_time()
-    index = 1
-    extract_inout_time(index)
+    # extract_frame_time()
+    camid = 12
+    index = 22
+    extract_inout_time(index, camid)
