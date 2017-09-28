@@ -4,28 +4,18 @@ import os
 
 file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
 lines = file.readlines()
-file.close()
 
-file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp2.txt", "w")
+file2 = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp2.txt", "w")
 
-arr1 = [11,
-18,
-19,
-20,
-26,
-7]
-arr2 = [1]
-print(len(arr1)*len(arr2))
 
-for line in lines:
-    cam1 = [int(s) for s in re.findall(r'\d+', line)][0]
-    id1 = [int(s) for s in re.findall(r'\d+', line)][1]
-    cam2 = [int(s) for s in re.findall(r'\d+', line)][2]
-    id2 = [int(s) for s in re.findall(r'\d+', line)][3]
+print(lines)
+print([int(s) for s in re.findall(r'\d+', lines[0])][0])
+print([int(s) for s in re.findall(r'\d+', lines[0])][1])
+print([int(s) for s in re.findall(r'\d+', lines[0])][2])
 
-    if cam1 == 21 and cam2 == 11 and id1 in arr1 and id2 in arr2:
-        print("eh")
-        print(cam1, id1, cam2, id2)
+for i in range(0, len(lines)):
+    if [int(s) for s in re.findall(r'\d+', lines[i])][0] == [int(s) for s in re.findall(r'\d+', lines[i+1])][0] and [int(s) for s in re.findall(r'\d+', lines[i])][1] == [int(s) for s in re.findall(r'\d+', lines[i+1])][1]:
 
-    else:
-        file.write(line)
+        inouts = str([int(s) for s in re.findall(r'\d+', lines[i])][0]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][1]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][2]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][3]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][4]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][5]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][2]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][3]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][4]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][5]) + "\n"
+
+        file2.write(inouts)
