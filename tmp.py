@@ -14,40 +14,40 @@ missing = [(1, 18, 122725, 22), (1, 18, 122725, 63) , (1, 18, 122725, 69), (1, 1
     , (17, 25, 122700, 1), (17, 25, 122700, 10), (17, 25, 122700, 11), (17, 25, 122700, 13), (17, 25, 122700, 15), (17, 25, 122700, 22), (17, 25, 122700, 6), (17, 25, 122700, 7), (17, 25, 122700, 9)
     , (18, 25, 122700, 6), (19, 25, 122700, 2), (19, 25, 122700, 3), (19, 25, 122700, 9), (19, 25, 122700, 10), (20, 25, 122700, 16), (20, 25, 122700, 7), (21, 18, 122725, 21), (21, 18, 122725, 3), (21, 18, 122725, 4), (21, 18, 122725, 6), (21, 18, 122725, 8), (21, 18, 122725, 9)]
 
-
+print(len(missing))
 times = []
-for i in range(0, len(missing)):
-    cam, framerate, timess, id = missing[i]
-    print(missing[i])
-    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(cam)+"/"+str(cam)+".txt")
-
-    for line in file.readlines():
-        if line.startswith("101") and id == [int(s) for s in re.findall(r'\d+', line)][1]:
-            frame_number = [int(s) for s in re.findall(r'\d+', line)][7]
-            exists = [int(s) for s in re.findall(r'\d+', line)][8]
-
-            if exists == 1:
-
-                seconds = math.floor(frame_number / framerate)
-
-                minute = math.floor(seconds / 60)
-                second = seconds - (minute * 60)
-
-                start_hour = int(str(timess)[0:2])
-                start_min = int(str(timess)[2:4])
-                start_sec = int(str(timess)[4:6])
-
-                new_min = start_min + minute
-                if start_sec + second > 60:
-                    new_sec = (start_sec + second) % 60
-                    new_min += 1
-                else:
-                    new_sec = start_sec + second
-
-                times.append((cam, id, frame_number, start_hour, new_min, new_sec))
-
-    print(times)
-
+# for i in range(0, len(missing)):
+#     cam, framerate, timess, id = missing[i]
+#     print(missing[i])
+#     file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(cam)+"/"+str(cam)+".txt")
+#
+#     for line in file.readlines():
+#         if line.startswith("101") and id == [int(s) for s in re.findall(r'\d+', line)][1]:
+#             frame_number = [int(s) for s in re.findall(r'\d+', line)][7]
+#             exists = [int(s) for s in re.findall(r'\d+', line)][8]
+#
+#             if exists == 1:
+#
+#                 seconds = math.floor(frame_number / framerate)
+#
+#                 minute = math.floor(seconds / 60)
+#                 second = seconds - (minute * 60)
+#
+#                 start_hour = int(str(timess)[0:2])
+#                 start_min = int(str(timess)[2:4])
+#                 start_sec = int(str(timess)[4:6])
+#
+#                 new_min = start_min + minute
+#                 if start_sec + second > 60:
+#                     new_sec = (start_sec + second) % 60
+#                     new_min += 1
+#                 else:
+#                     new_sec = start_sec + second
+#
+#                 times.append((cam, id, frame_number, start_hour, new_min, new_sec))
+#
+#     print(times)
+#
 
 
 print(times)
