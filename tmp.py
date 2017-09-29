@@ -2,20 +2,52 @@ import re
 
 import os
 
-file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
-lines = file.readlines()
+import math
 
-file2 = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp2.txt", "w")
+missing = [(1, 18, 122725, 22), (1, 18, 122725, 63) , (1, 18, 122725, 69), (1, 18, 122725, 9), (2, 25, 122700, 10), (2, 25, 122700, 11), (2, 25, 122700, 12), (2, 25, 122700, 13), (2, 25, 122700, 14), (2, 25, 122700, 15), (2, 25, 122700, 16), (2, 25, 122700, 17)
+    , (2, 25, 122700, 18), (2, 25, 122700, 21), (2, 25, 122700, 22), (2, 25, 122700, 23), (2, 25, 122700, 25), (2, 25, 122700, 27), (2, 25, 122700, 29), (2, 25, 122700, 34), (2, 25, 122700, 35), (2, 25, 122700, 36), (2, 25, 122700, 37), (2, 25, 122700, 38)
+    , (2, 25, 122700, 4), (2, 25, 122700, 40), (2, 25, 122700, 41), (2, 25, 122700, 42), (2, 25, 122700, 43), (2, 25, 122700, 46), (2, 25, 122700, 47), (2, 25, 122700, 5), (2, 25, 122700, 51), (2, 25, 122700, 7), (2, 25, 122700, 9), (2, 25, 122700, 54)
+    , (11, 18, 122725, 3), (11, 18, 122725, 4), (11, 18, 122725, 6), (12, 25, 122700, 10), (12, 25, 122700, 11), (12, 25, 122700, 16), (12, 25, 122700, 2), (12, 25, 122700, 24), (13, 25, 122700, 1), (13, 25, 122700, 12)
+    , (14, 25, 122700, 1), (14, 25, 122700, 11), (14, 25, 122700, 12), (14, 25, 122700, 13), (14, 25, 122700, 14), (14, 25, 122700, 15), (14, 25, 122700, 16), (14, 25, 122700, 2), (14, 25, 122700, 21), (14, 25, 122700, 23), (14, 25, 122700, 27), (14, 25, 122700, 28)
+    , (14, 25, 122700, 30), (14, 25, 122700, 34), (14, 25, 122700, 35), (14, 25, 122700, 36), (14, 25, 122700, 37), (14, 25, 122700, 39), (14, 25, 122700, 4), (14, 25, 122700, 40), (14, 25, 122700, 41), (14, 25, 122700, 43), (14, 25, 122700, 44), (14, 25, 122700, 45)
+    , (14, 25, 122700, 48), (14, 25, 122700, 5), (14, 25, 122700, 50), (14, 25, 122700, 6), (14, 25, 122700, 7), (14, 25, 122700, 8), (15, 18, 122725, 1), (15, 18, 122725, 10), (15, 18, 122725, 13), (15, 18, 122725, 16), (15, 18, 122725, 3)
+    , (17, 25, 122700, 1), (17, 25, 122700, 10), (17, 25, 122700, 11), (17, 25, 122700, 13), (17, 25, 122700, 15), (17, 25, 122700, 22), (17, 25, 122700, 6), (17, 25, 122700, 7), (17, 25, 122700, 9)
+    , (18, 25, 122700, 6), (19, 25, 122700, 2), (19, 25, 122700, 3), (19, 25, 122700, 9), (19, 25, 122700, 10), (20, 25, 122700, 16), (20, 25, 122700, 7), (21, 18, 122725, 21), (21, 18, 122725, 3), (21, 18, 122725, 4), (21, 18, 122725, 6), (21, 18, 122725, 8), (21, 18, 122725, 9)]
 
 
-print(lines)
-print([int(s) for s in re.findall(r'\d+', lines[0])][0])
-print([int(s) for s in re.findall(r'\d+', lines[0])][1])
-print([int(s) for s in re.findall(r'\d+', lines[0])][2])
+times = []
+for i in range(0, len(missing)):
+    cam, framerate, timess, id = missing[i]
+    print(missing[i])
+    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/"+str(cam)+"/"+str(cam)+".txt")
 
-for i in range(0, len(lines)):
-    if [int(s) for s in re.findall(r'\d+', lines[i])][0] == [int(s) for s in re.findall(r'\d+', lines[i+1])][0] and [int(s) for s in re.findall(r'\d+', lines[i])][1] == [int(s) for s in re.findall(r'\d+', lines[i+1])][1]:
+    for line in file.readlines():
+        if line.startswith("101") and id == [int(s) for s in re.findall(r'\d+', line)][1]:
+            frame_number = [int(s) for s in re.findall(r'\d+', line)][7]
+            exists = [int(s) for s in re.findall(r'\d+', line)][8]
 
-        inouts = str([int(s) for s in re.findall(r'\d+', lines[i])][0]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][1]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][2]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][3]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][4]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i])][5]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][2]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][3]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][4]) + ", " + str([int(s) for s in re.findall(r'\d+', lines[i+1])][5]) + "\n"
+            if exists == 1:
 
-        file2.write(inouts)
+                seconds = math.floor(frame_number / framerate)
+
+                minute = math.floor(seconds / 60)
+                second = seconds - (minute * 60)
+
+                start_hour = int(str(timess)[0:2])
+                start_min = int(str(timess)[2:4])
+                start_sec = int(str(timess)[4:6])
+
+                new_min = start_min + minute
+                if start_sec + second > 60:
+                    new_sec = (start_sec + second) % 60
+                    new_min += 1
+                else:
+                    new_sec = start_sec + second
+
+                times.append((cam, id, frame_number, start_hour, new_min, new_sec))
+
+    print(times)
+
+
+
+print(times)
