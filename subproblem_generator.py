@@ -175,12 +175,13 @@ entry_sorted_cam2 = sorted(cam2_sorted_st, key=lambda l: (l[2],l[3]), reverse=Fa
 intervals1 = []
 print(cam1_sorted_st)
 for i in range(0, len(cam1_sorted_st)):
-    exit_min = cam1_sorted_st[i][4]
-    exit_sec = cam1_sorted_st[i][5]
+    if cam1_sorted_st[i][7] == 1:
+        exit_min = cam1_sorted_st[i][4]
+        exit_sec = cam1_sorted_st[i][5]
 
-    diff = (exit_min - 27, exit_sec)
+        diff = (exit_min - 27, exit_sec)
 
-    intervals1.append(diff)
+        intervals1.append(diff)
 
 print(intervals1)
 
@@ -188,11 +189,12 @@ print(intervals1)
 intervals2 = []
 print(entry_sorted_cam2)
 for i in range(0, len(entry_sorted_cam2)):
-    entry_min = entry_sorted_cam2[i][2]
-    entry_sec = entry_sorted_cam2[i][3]
+    if entry_sorted_cam2[i][6] == 1:
+        entry_min = entry_sorted_cam2[i][2]
+        entry_sec = entry_sorted_cam2[i][3]
 
-    diff = (entry_min - 27, entry_sec)
+        diff = (entry_min - 27, entry_sec)
 
-    intervals2.append(diff)
+        intervals2.append(diff)
 
 print(intervals2)
