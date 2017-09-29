@@ -98,4 +98,101 @@ for i in range(0, len(single_tracks)):
 print(corrected_ST)
 
 
+# (1, 10, 27, 27, 27, 42, 2, 1)
+# (2, 20, 27, 43, 27, 48, 1, 4)
 
+
+# (1, 10, 27, 27, 27, 58, 2, 1)
+# (2, 20, 28, 2, 27, 48, 1, 4)
+
+threshold = 5
+for i in range(0, len(corrected_ST)):
+    for j in range(0, len(corrected_ST)):
+        if corrected_ST[i][0] == 1 and corrected_ST[i][7] == 1:
+            if corrected_ST[j][0] == 2 and corrected_ST[j][6] == 1:
+                if corrected_ST[i][4] == corrected_ST[j][2]:
+                    if corrected_ST[j][3] - corrected_ST[i][5] < threshold and corrected_ST[j][3] > corrected_ST[i][5]:
+                        print("hi")
+                        print(corrected_ST[i][4], corrected_ST[i][5])
+                        print(corrected_ST[j][2], corrected_ST[j][3])
+                        print(corrected_ST[i])
+                        print(corrected_ST[j])
+                elif corrected_ST[j][2] - corrected_ST[i][4] == 1:
+                    if (corrected_ST[j][3] + 60) - corrected_ST[i][5] < threshold:
+                        print("ih")
+                        print(corrected_ST[i])
+                        print(corrected_ST[j])
+
+
+
+sorted_corrected_ST = sorted(corrected_ST, key=lambda l: (l[4],l[5]), reverse=False)
+cam1_sorted_st = []
+cam2_sorted_st = []
+cam11_sorted_st = []
+cam12_sorted_st = []
+cam13_sorted_st = []
+cam14_sorted_st = []
+cam15_sorted_st = []
+cam17_sorted_st = []
+cam18_sorted_st = []
+cam19_sorted_st = []
+cam20_sorted_st = []
+cam21_sorted_st = []
+cam22_sorted_st = []
+print("_______________________")
+for i in range(0, len(sorted_corrected_ST)):
+    if sorted_corrected_ST[i][0] == 1:
+        cam1_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 2:
+        cam2_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 11:
+        cam11_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 12:
+        cam12_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 13:
+        cam13_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 14:
+        cam14_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 15:
+        cam15_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 17:
+        cam17_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 18:
+        cam18_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 19:
+        cam19_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 20:
+        cam20_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 21:
+        cam21_sorted_st.append(sorted_corrected_ST[i])
+    if sorted_corrected_ST[i][0] == 22:
+        cam22_sorted_st.append(sorted_corrected_ST[i])
+
+
+
+entry_sorted_cam2 = sorted(cam2_sorted_st, key=lambda l: (l[2],l[3]), reverse=False)
+
+intervals1 = []
+print(cam1_sorted_st)
+for i in range(0, len(cam1_sorted_st)):
+    exit_min = cam1_sorted_st[i][4]
+    exit_sec = cam1_sorted_st[i][5]
+
+    diff = (exit_min - 27, exit_sec)
+
+    intervals1.append(diff)
+
+print(intervals1)
+
+
+intervals2 = []
+print(entry_sorted_cam2)
+for i in range(0, len(entry_sorted_cam2)):
+    entry_min = entry_sorted_cam2[i][2]
+    entry_sec = entry_sorted_cam2[i][3]
+
+    diff = (entry_min - 27, entry_sec)
+
+    intervals2.append(diff)
+
+print(intervals2)
