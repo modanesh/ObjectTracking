@@ -2,7 +2,7 @@
 import re
 
 
-def read_ST_from_file():
+def prepare_candidate_ST():
     sngl_trck = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/single_tracks.txt")
     single_tracks = []
     for line in sngl_trck.readlines():
@@ -23,7 +23,6 @@ def read_ST_from_file():
 
 
 
-def create_corrected_ST():
     corrected_ST = []
 
     for i in range(0, len(single_tracks)):
@@ -52,7 +51,6 @@ def create_corrected_ST():
 
 
 
-def dividing_corrected_ST_by_time():
     sorted_corrected_ST = sorted(corrected_ST, key=lambda l: (l[4],l[5]), reverse=False)
     cam1_sorted_st = []
     cam2_sorted_st = []
@@ -97,7 +95,6 @@ def dividing_corrected_ST_by_time():
             cam22_sorted_st.append(sorted_corrected_ST[i])
 
 
-def entry_exit_time_calculation():
     intervals1 = []
     for i in range(0, len(cam11_sorted_st)):
         if cam11_sorted_st[i][6] == 2:
@@ -150,6 +147,32 @@ def entry_exit_time_calculation():
 
 
 
+def extract_subproblem():
+    one_exit = [(1, 6, 0, 14, 2, 1), (1, 7, 0, 31, 2, 1), (1, 9, 0, 33, 2, 1), (1, 11, 0, 40, 2, 1), (1, 12, 0, 41, 2, 1), (1, 10, 0, 42, 2, 1), (1, 15, 0, 58, 2, 1), (1, 18, 1, 15, 2, 1), (1, 21, 1, 38, 2, 1), (1, 22, 1, 39, 2, 1), (1, 25, 1, 47, 1, 1), (1, 27, 1, 49, 1, 1), (1, 20, 1, 57, 2, 1), (1, 28, 1, 57, 2, 1), (1, 29, 2, 7, 1, 1), (1, 37, 2, 31, 2, 1), (1, 42, 2, 40, 2, 1), (1, 41, 2, 41, 2, 1), (1, 49, 3, 9, 2, 1), (1, 50, 3, 23, 2, 1), (1, 52, 3, 31, 2, 1), (1, 53, 3, 35, 2, 1), (1, 54, 3, 36, 2, 1), (1, 55, 3, 37, 2, 1), (1, 57, 3, 38, 2, 1), (1, 59, 3, 45, 2, 1), (1, 60, 3, 46, 2, 1), (1, 31, 3, 54, 1, 1), (1, 62, 3, 56, 2, 1), (1, 63, 3, 57, 1, 1), (1, 64, 4, 5, 2, 1), (1, 66, 4, 32, 2, 1), (1, 67, 4, 36, 2, 1), (1, 72, 4, 43, 2, 1), (1, 71, 4, 44, 2, 1)]
+    two_enter = [(2, 11, 0, 15, 1, 3), (2, 16, 0, 32, 1, 3), (2, 17, 0, 34, 1, 3), (2, 18, 0, 40, 1, 3), (2, 19, 0, 42, 1, 3), (2, 20, 0, 43, 1, 4), (2, 25, 0, 59, 1, 3), (2, 28, 1, 17, 1, 4), (2, 36, 1, 40, 1, 4), (2, 37, 1, 40, 1, 4), (2, 39, 1, 49, 1, 1), (2, 40, 1, 50, 1, 1), (2, 41, 1, 58, 1, 3), (2, 42, 1, 59, 1, 1), (2, 48, 2, 10, 1, 3)]
+    not_gaps = []
+    # for i in range(0, len(one_exit)-1):
+    #     min_gap = one_exit[i][2]
+    #     sec_gap = one_exit[i][3]
+    #     next_min_gap = one_exit[i+1][2]
+    #     next_sec_gap = one_exit[i+1][3]
+    #
+    #     if (next_min_gap - min_gap > 0) or (next_min_gap == min_gap and next_sec_gap - sec_gap > 5):
+    #         print("gap")
+    #         print(one_exit[i])
+    #     elif next_min_gap == min_gap and next_sec_gap - sec_gap < 5:
+    #         print("not gap")
+    #         print(one_exit[i])
+    #         print(one_exit[i+1])
+    #         not_gaps.append((one_exit[i][2], one_exit[i][3]))
+    #         not_gaps.append((one_exit[i+1][2], one_exit[i+1][3]))
+    #
+    # one_exit_gaps = sorted(set(not_gaps), key=lambda l: (l[0],l[1]), reverse=False)
+    # print(one_exit_gaps)
+
+
+
 
 if __name__ == '__main__':
-    print("hi")
+    print("I need help, from God!")
+    extract_subproblem()
