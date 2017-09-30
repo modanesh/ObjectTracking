@@ -170,31 +170,62 @@ for i in range(0, len(sorted_corrected_ST)):
 
 
 
-entry_sorted_cam2 = sorted(cam2_sorted_st, key=lambda l: (l[2],l[3]), reverse=False)
-
 intervals1 = []
-print(cam1_sorted_st)
-for i in range(0, len(cam1_sorted_st)):
-    if cam1_sorted_st[i][7] == 1:
-        exit_min = cam1_sorted_st[i][4]
-        exit_sec = cam1_sorted_st[i][5]
+print(cam11_sorted_st)
+for i in range(0, len(cam11_sorted_st)):
+    if cam11_sorted_st[i][6] == 2:
+        exit_min = cam11_sorted_st[i][2]
+        exit_sec = cam11_sorted_st[i][3]
 
-        diff = (exit_min - 27, exit_sec)
+        intervals1.append((cam11_sorted_st[i][0], cam11_sorted_st[i][1], exit_min - 27, exit_sec, cam11_sorted_st[i][6], cam11_sorted_st[i][7]))
 
-        intervals1.append(diff)
-
-print(intervals1)
+print(sorted(intervals1, key=lambda l: (l[2],l[3]), reverse=False))
 
 
 intervals2 = []
-print(entry_sorted_cam2)
-for i in range(0, len(entry_sorted_cam2)):
-    if entry_sorted_cam2[i][6] == 1:
-        entry_min = entry_sorted_cam2[i][2]
-        entry_sec = entry_sorted_cam2[i][3]
+print(cam13_sorted_st)
+for i in range(0, len(cam13_sorted_st)):
+    if cam13_sorted_st[i][6] == 4:
+        entry_min = cam13_sorted_st[i][2]
+        entry_sec = cam13_sorted_st[i][3]
 
-        diff = (entry_min - 27, entry_sec)
+        intervals2.append((cam13_sorted_st[i][0], cam13_sorted_st[i][1], entry_min - 27, entry_sec, cam13_sorted_st[i][6], cam13_sorted_st[i][7]))
 
-        intervals2.append(diff)
+print(sorted(intervals2, key=lambda l: (l[2],l[3]), reverse=False))
 
-print(intervals2)
+
+intervals3 = []
+print(cam21_sorted_st)
+for i in range(0, len(cam21_sorted_st)):
+    if cam21_sorted_st[i][6] == 3:
+        entry_min = cam21_sorted_st[i][2]
+        entry_sec = cam21_sorted_st[i][3]
+
+        intervals3.append((cam21_sorted_st[i][0], cam21_sorted_st[i][1], entry_min - 27, entry_sec, cam21_sorted_st[i][6], cam21_sorted_st[i][7]))
+
+print(sorted(intervals3, key=lambda l: (l[2],l[3]), reverse=False))
+
+
+intervals5 = []
+print(cam21_sorted_st)
+for i in range(0, len(cam21_sorted_st)):
+    if cam21_sorted_st[i][6] == 4:
+        entry_min = cam21_sorted_st[i][2]
+        entry_sec = cam21_sorted_st[i][3]
+
+        intervals5.append((cam21_sorted_st[i][0], cam21_sorted_st[i][1], entry_min - 27, entry_sec, cam21_sorted_st[i][6], cam21_sorted_st[i][7]))
+
+print(sorted(intervals5, key=lambda l: (l[2],l[3]), reverse=False))
+
+
+
+intervals4 = []
+print(cam22_sorted_st)
+for i in range(0, len(cam22_sorted_st)):
+    if cam22_sorted_st[i][7] == 1:
+        entry_min = cam22_sorted_st[i][4]
+        entry_sec = cam22_sorted_st[i][5]
+
+        intervals4.append((cam22_sorted_st[i][0], cam22_sorted_st[i][1], entry_min - 27, entry_sec, cam22_sorted_st[i][6], cam22_sorted_st[i][7]))
+
+print(sorted(intervals4, key=lambda l: (l[2],l[3]), reverse=False))
