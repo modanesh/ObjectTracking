@@ -14,10 +14,7 @@ def evaluator(assignment_array):
     #   - ehtemale harekat beine mabda va maghsad
 
     evaluations = []
-    print("~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(assignment_array)
-    print(assignment_array[0])
-    print(assignment_array[1])
+
     # Get color differences
     # if hue_diff and de_diff are 0, they don't have colors. so the color differences cannot be used.
     cam_1 = assignment_array[0][1]
@@ -119,33 +116,9 @@ def evaluator(assignment_array):
 
 
 def do_assignments(subproblem):
-    # OT = []
-    # IT = []
-    # assignments = []
-    # current_state = []
-    # evaluation = []
-    # for i in range(0, len(subproblem)):
-    #     if i < floor(len(subproblem)/2):
-    #         OT.append(subproblem[i])
-    #     else:
-    #         IT.append(subproblem[i])
-    #
-    # if len(subproblem) > 2:
-    #     for i in range(0, len(OT)):
-    #         assignments.append((OT[i], IT[i]))
-    #
-    # else:
-    #     assignments.append((subproblem[0], subproblem[1]))
-    #
-    # print("++")
-    # print(assignments)
-    # current_state = assignments
-    #
-    # evaluation = evaluator(assignments)
-    #
-    # return evaluation
     print("subproblem: ", subproblem)
     current_eval = []
+    evaluations = []
     previous_states = []
     assignments = []
     OT_random = random.sample(range(0, int(len(subproblem)/2)), int(len(subproblem)/2))
@@ -153,13 +126,18 @@ def do_assignments(subproblem):
 
     combinations = list(itertools.combinations(subproblem, 2))
     for i in range(0, len(combinations)-1):
-        if combinations[i][0][1] == combinations[i][1][1]:
-            combinations.pop(i)
+        if combinations[i][0][1] != combinations[i][1][1]:
+            assignments.append(combinations[i])
 
-    print("combinations(asses): ", combinations)
-    for i in range(0, len(combinations)):
-        current_eval = evaluator(combinations[i])
-        print("current eval: ", current_eval)
+    if len(combinations) == 1:
+        assignments.append(combinations[0])
+
+    print("combinations: ", combinations)
+    print("asssssssssss: ", assignments)
+    print(len(assignments))
+    for i in range(0, len(assignments)):
+        evaluations.append(evaluator(assignments[i]))
+    print("evals: ", evaluations, "\n")
 
 
 
