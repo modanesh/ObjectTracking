@@ -7,7 +7,7 @@ from image_handler import hue_from_rgb
 from image_handler import hue_from_image
 
 
-def evaluator(assignment_array):
+def l2_evaluator(assignment_array):
     # barresi monaseb budane assignment ha:
     #   - fasele rangi (color threshold)
     #   - fasele zamani (time threshold)
@@ -24,7 +24,8 @@ def evaluator(assignment_array):
     hue_diff = 360
     de_diff = 100
 
-    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_color_differences.txt")
+    file = open(
+        "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_color_differences.txt")
     for line in file.readlines():
         if line.startswith("(("):
             cam_1_file = [int(s) for s in re.findall(r'\d+', line)][0]
@@ -37,10 +38,8 @@ def evaluator(assignment_array):
                 hue_diff = hue_diff_file
                 de_diff = de_diff_file
 
-    color_prob_1 = round(1 - round(hue_diff/360, 2), 2)
-    color_prob_2 = round(1 - round(de_diff/100, 2), 2)
-
-
+    color_prob_1 = round(1 - round(hue_diff / 360, 2), 2)
+    color_prob_2 = round(1 - round(de_diff / 100, 2), 2)
 
     # Get time differences
     # first, use entry exit time differences. second, use the time differences of captured frames(from excel).
@@ -63,13 +62,12 @@ def evaluator(assignment_array):
     else:
         diff_in_seconds = 1
 
-
-
-    time_prob_1 = round(1 - round(diff_in_seconds/70, 2), 2)
+    time_prob_1 = round(1 - round(diff_in_seconds / 70, 2), 2)
 
     time_diff = 0
 
-    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_time_differences.txt")
+    file = open(
+        "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_time_differences.txt")
     for line in file.readlines():
         if line.startswith("(("):
             cam_1_file = [int(s) for s in re.findall(r'\d+', line)][0]
@@ -85,7 +83,6 @@ def evaluator(assignment_array):
     else:
         time_prob_2 = 0.25
 
-
     # Calculate the probability of moving between source and destination.
     x_1_in = assignment_array[0][5]
     x_1_out = assignment_array[0][6]
@@ -95,7 +92,8 @@ def evaluator(assignment_array):
     prob_in = 0
     prob_out = 0
 
-    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_in_out_probabilities.txt")
+    file = open(
+        "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/all_in_out_probabilities.txt")
     for line in file.readlines():
         if line.startswith("("):
             cam_file = [int(s) for s in re.findall(r'\d+', line)][0]
@@ -109,35 +107,125 @@ def evaluator(assignment_array):
             if cam_file == cam_2 and x_2_in == x_file and inout_file == 0:
                 prob_in = prob_file
 
-    path_prob = round(prob_in*prob_out/10000, 2)
+    path_prob = round(prob_in * prob_out / 10000, 2)
 
     evaluations.append((color_prob_1, color_prob_2, time_prob_1, time_prob_2, path_prob))
     return evaluations
 
 
+def evaluator_manager(assignment_array):
+    if len(assignment_array) == 2:
+        l2_evaluator(assignment_array)
+    elif len(assignment_array) == 3:
+        l3_evaluator(assignment_array)
+    elif len(assignment_array) == 4:
+        l4_evaluator(assignment_array)
+    elif len(assignment_array) == 5:
+        l5_evaluator(assignment_array)
+
+
 def do_assignments(subproblem):
-    print("subproblem: ", subproblem)
-    current_eval = []
     evaluations = []
-    previous_states = []
     assignments = []
-    OT_random = random.sample(range(0, int(len(subproblem)/2)), int(len(subproblem)/2))
-    IT_random = random.sample(range(int(len(subproblem)/2), len(subproblem)), int(len(subproblem)/2))
+    final_assignments = []
 
     combinations = list(itertools.combinations(subproblem, 2))
-    for i in range(0, len(combinations)-1):
-        if combinations[i][0][1] != combinations[i][1][1]:
-            assignments.append(combinations[i])
 
-    if len(combinations) == 1:
-        assignments.append(combinations[0])
+    if len(subproblem) == 2:
+        assignments = combinations
+    else:
+        assignments = list(itertools.combinations(combinations, int(len(subproblem)/2)))
 
-    print("combinations: ", combinations)
-    print("asssssssssss: ", assignments)
-    print(len(assignments))
-    for i in range(0, len(assignments)):
-        evaluations.append(evaluator(assignments[i]))
-    print("evals: ", evaluations, "\n")
+    if len(assignments) == 1:
+        final_assignments = assignments
+    elif len(assignments) == 15:
+        for i in range(0, len(assignments)):
+            if assignments[i][0][0][1] != assignments[i][0][1][1]:
+                if assignments[i][1][0][1] != assignments[i][1][1][1]:
+                    if assignments[i][0][0][2] != assignments[i][1][0][2] and assignments[i][0][0][1] == assignments[i][1][0][1]:
+                        if assignments[i][0][1][2] != assignments[i][1][1][2] and assignments[i][0][1][1] == assignments[i][1][1][1]:
+                            final_assignments.append(assignments[i])
+    elif len(assignments) == 455:
+        for i in range(0, len(assignments)):
+            if assignments[i][0][0][1] != assignments[i][0][1][1]:
+                if assignments[i][1][0][1] != assignments[i][1][1][1]:
+                    if assignments[i][2][0][1] != assignments[i][2][1][1]:
+                        if assignments[i][0][0][2] != assignments[i][1][0][2] and assignments[i][0][0][1] == assignments[i][1][0][1]:
+                            if assignments[i][0][1][2] != assignments[i][1][1][2] and assignments[i][0][1][1] == assignments[i][1][1][1]:
+                                if assignments[i][0][0][2] != assignments[i][2][0][2] and assignments[i][0][0][1] == assignments[i][2][0][1]:
+                                    if assignments[i][0][1][2] != assignments[i][2][1][2] and assignments[i][0][1][1] == assignments[i][2][1][1]:
+                                        if assignments[i][2][0][2] != assignments[i][1][0][2] and assignments[i][2][0][1] == assignments[i][1][0][1]:
+                                            if assignments[i][2][1][2] != assignments[i][1][1][2] and assignments[i][2][1][1] == assignments[i][1][1][1]:
+                                                final_assignments.append(assignments[i])
+    elif len(assignments) == 20475:
+        for i in range(0, len(assignments)):
+            if assignments[i][0][0][1] != assignments[i][0][1][1]:
+                if assignments[i][1][0][1] != assignments[i][1][1][1]:
+                    if assignments[i][2][0][1] != assignments[i][2][1][1]:
+                        if assignments[i][3][0][1] != assignments[i][3][1][1]:
+                            if assignments[i][0][0][2] != assignments[i][1][0][2] and assignments[i][0][0][1] == assignments[i][1][0][1]:
+                                if assignments[i][0][1][2] != assignments[i][1][1][2] and assignments[i][0][1][1] == assignments[i][1][1][1]:
+                                    if assignments[i][0][0][2] != assignments[i][2][0][2] and assignments[i][0][0][1] == assignments[i][2][0][1]:
+                                        if assignments[i][0][1][2] != assignments[i][2][1][2] and assignments[i][0][1][1] == assignments[i][2][1][1]:
+                                            if assignments[i][1][0][2] != assignments[i][2][0][2] and assignments[i][1][0][1] == assignments[i][2][0][1]:
+                                                if assignments[i][1][1][2] != assignments[i][2][1][2] and assignments[i][1][1][1] == assignments[i][2][1][1]:
+                                                    if assignments[i][0][0][2] != assignments[i][3][0][2] and assignments[i][0][0][1] == assignments[i][3][0][1]:
+                                                        if assignments[i][0][1][2] != assignments[i][3][1][2] and assignments[i][0][1][1] == assignments[i][3][1][1]:
+                                                            if assignments[i][1][0][2] != assignments[i][3][0][2] and assignments[i][1][0][1] == assignments[i][3][0][1]:
+                                                                if assignments[i][1][1][2] != assignments[i][3][1][2] and assignments[i][1][1][1] == assignments[i][3][1][1]:
+                                                                    if assignments[i][2][0][2] != assignments[i][3][0][2] and assignments[i][2][0][1] == assignments[i][3][0][1]:
+                                                                        if assignments[i][2][1][2] != assignments[i][3][1][2] and assignments[i][2][1][1] == assignments[i][3][1][1]:
+                                                                            final_assignments.append(assignments[i])
+    elif len(assignments) == 1221759:
+        for i in range(0, len(assignments)):
+            if assignments[i][0][0][1] != assignments[i][0][1][1]:
+                if assignments[i][1][0][1] != assignments[i][1][1][1]:
+                    if assignments[i][2][0][1] != assignments[i][2][1][1]:
+                        if assignments[i][3][0][1] != assignments[i][3][1][1]:
+                            if assignments[i][4][0][1] != assignments[i][4][1][1]:
+                                if assignments[i][0][0][2] != assignments[i][1][0][2] and assignments[i][0][0][1] == assignments[i][1][0][1]:
+                                    if assignments[i][0][1][2] != assignments[i][1][1][2] and assignments[i][0][1][1] == assignments[i][1][1][1]:
+                                        if assignments[i][0][0][2] != assignments[i][2][0][2] and assignments[i][0][0][1] == assignments[i][2][0][1]:
+                                            if assignments[i][0][1][2] != assignments[i][2][1][2] and assignments[i][0][1][1] == assignments[i][2][1][1]:
+                                                if assignments[i][1][0][2] != assignments[i][2][0][2] and assignments[i][1][0][1] == assignments[i][2][0][1]:
+                                                    if assignments[i][1][1][2] != assignments[i][2][1][2] and assignments[i][1][1][1] == assignments[i][2][1][1]:
+                                                        if assignments[i][0][0][2] != assignments[i][3][0][2] and assignments[i][0][0][1] == assignments[i][3][0][1]:
+                                                            if assignments[i][0][1][2] != assignments[i][3][1][2] and assignments[i][0][1][1] == assignments[i][3][1][1]:
+                                                                if assignments[i][1][0][2] != assignments[i][3][0][2] and assignments[i][1][0][1] == assignments[i][3][0][1]:
+                                                                    if assignments[i][1][1][2] != assignments[i][3][1][2] and assignments[i][1][1][1] == assignments[i][3][1][1]:
+                                                                        if assignments[i][2][0][2] != assignments[i][3][0][2] and assignments[i][2][0][1] == assignments[i][3][0][1]:
+                                                                            if assignments[i][2][1][2] != assignments[i][3][1][2] and assignments[i][2][1][1] == assignments[i][3][1][1]:
+                                                                                if assignments[i][0][0][2] != assignments[i][4][0][2] and assignments[i][0][0][1] == assignments[i][4][0][1]:
+                                                                                    if assignments[i][0][1][2] != assignments[i][4][1][2] and assignments[i][0][1][1] == assignments[i][4][1][1]:
+                                                                                        if assignments[i][1][0][2] != assignments[i][4][0][2] and assignments[i][1][0][1] == assignments[i][4][0][1]:
+                                                                                            if assignments[i][1][1][2] != assignments[i][4][1][2] and assignments[i][1][1][1] == assignments[i][4][1][1]:
+                                                                                                if assignments[i][2][0][2] != assignments[i][4][0][2] and assignments[i][2][0][1] == assignments[i][4][0][1]:
+                                                                                                    if assignments[i][2][1][2] != assignments[i][4][1][2] and assignments[i][2][1][1] == assignments[i][4][1][1]:
+                                                                                                        if assignments[i][3][0][2] != assignments[i][4][0][2] and assignments[i][3][0][1] == assignments[i][4][0][1]:
+                                                                                                            if assignments[i][3][1][2] != assignments[i][4][1][2] and assignments[i][3][1][1] == assignments[i][4][1][1]:
+                                                                                                                final_assignments.append(assignments[i])
+
+
+    for i in range(0, len(final_assignments)):
+        print(len(final_assignments[i]))
+        print(final_assignments[i])
+        evaluations.append(evaluator_manager(final_assignments[i]))
+
+    # simulated_annealing(assignments, evaluations)
+    print("evaluations")
+    print(evaluations)
+
+
+
+def simulated_annealing(assignments, evaluations):
+    print("sa")
+    print(assignments)
+    print(evaluations)
+    current_state = []
+    # for i in range(0, len(evaluations)):
+
+
+
 
 
 
