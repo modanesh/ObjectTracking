@@ -252,9 +252,18 @@ def do_assignments(subproblem):
         for i in range(0, len(assignments)):
             if assignments[i][0][0][1] != assignments[i][0][1][1]:
                 if assignments[i][1][0][1] != assignments[i][1][1][1]:
-                    if assignments[i][0][0][2] != assignments[i][1][0][2] and assignments[i][0][0][1] == assignments[i][1][0][1]:
-                        if assignments[i][0][1][2] != assignments[i][1][1][2] and assignments[i][0][1][1] == assignments[i][1][1][1]:
-                            final_assignments.append(assignments[i])
+                    if assignments[i][0][0][1] == assignments[i][1][0][1]:
+                        if assignments[i][0][0][2] != assignments[i][1][0][2]:
+                            if assignments[i][0][1][1] == assignments[i][1][1][1]:
+                                if assignments[i][0][1][2] != assignments[i][1][1][2]:
+                                    final_assignments.append(assignments[i])
+                            else:
+                                final_assignments.append(assignments[i])
+                    elif assignments[i][0][1][1] == assignments[i][1][1][1]:
+                            if assignments[i][0][1][2] != assignments[i][1][1][2]:
+                                    final_assignments.append(assignments[i])
+                            else:
+                                final_assignments.append(assignments[i])
     elif len(assignments) == 455:
         for i in range(0, len(assignments)):
             if assignments[i][0][0][1] != assignments[i][0][1][1]:
@@ -315,17 +324,11 @@ def do_assignments(subproblem):
                                                                                                             if assignments[i][3][1][2] != assignments[i][4][1][2] and assignments[i][3][1][1] == assignments[i][4][1][1]:
                                                                                                                 final_assignments.append(assignments[i])
 
-
     for i in range(0, len(final_assignments)):
         if len(final_assignments) == 1 and len(final_assignments[i]) == 2:
             evaluations.append(l1_evaluator(final_assignments[i]))
         else:
-
             evaluations.append(evaluator_manager(final_assignments[i]))
-
-    print("evaluations")
-    print(evaluations)
-
 
     simulated_annealing(final_assignments, evaluations)
 
@@ -341,8 +344,6 @@ def compare_two_evaluations(eval_1, eval_2, T):
     score_1 = 0
     score_2 = 0
 
-    print(eval_1)
-    print(eval_2)
     for i in range(0, len(eval_1)):
         if eval_1[i][0] > 0.95:
             score_1 += 1.1
@@ -377,7 +378,6 @@ def compare_two_evaluations(eval_1, eval_2, T):
         score_2 += eval_2[i][4]
 
     acceptance_probability = math.exp((score_2 - score_1)/T)
-    print(acceptance_probability)
     return acceptance_probability
 
 
@@ -388,25 +388,28 @@ def simulated_annealing(assignments, evaluations):
     T = 1.0
     T_min = 0.00001
     alpha = 0.9
-    counter = 0
+    seen_states = []
+    seen_states.append(assignments[0])
     if len(assignments) > 1:
-        while T > T_min and counter < len(assignments):
+        while T > T_min:
             current_state = assignments[0]
             current_eval = evaluations[0]
 
             random_index = randint(1, len(assignments)-1)
 
-            candidate_state = assignments[random_index]
-            candidate_eval = evaluations[random_index]
+            if assignments[random_index] not in seen_states:
 
-            compare_result = compare_two_evaluations(current_eval, candidate_eval, T)
+                candidate_state = assignments[random_index]
+                candidate_eval = evaluations[random_index]
 
-            if compare_result > random.uniform(0, 1):
-                current_state = assignments[random_index]
-                current_eval = evaluations[random_index]
+                compare_result = compare_two_evaluations(current_eval, candidate_eval, T)
 
+                if compare_result > random.uniform(0, 1):
+                    current_state = candidate_state
+                    current_eval = candidate_eval
 
-            counter += 1
+                seen_states.append(candidate_state)
+
             T = T * alpha
 
     else:
@@ -415,6 +418,7 @@ def simulated_annealing(assignments, evaluations):
 
     print("........................................................")
     print(current_state)
+    print(current_eval)
 
 
 
@@ -426,10 +430,10 @@ def starting_step():
     probs = []
     assignments = []
 
-    # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/subproblems.txt")
-    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
+    file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/subproblems.txt")
+    # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
     for line in file.readlines():
-        if line.startswith("(") and [int(s) for s in re.findall(r'\d+', line)][0] != 123:
+        if line.startswith("(") and [int(s) for s in re.findall(r'\d+', line)][0] != 123 and [int(s) for s in re.findall(r'\d+', line)][0] != 104:
             subproblem = []
             subproblem_number = len(line.split("(")) - 1
             for i in range(0, subproblem_number):
@@ -443,10 +447,8 @@ def starting_step():
 
                 subproblem.append((sp_id, cam, id, min, sec, xin, xout))
 
-            probs = do_assignments(subproblem)
-            # print(probs)
+            do_assignments(subproblem)
 
-    return probs
 
 if __name__ == '__main__':
-    probabilities = starting_step()
+    starting_step()
