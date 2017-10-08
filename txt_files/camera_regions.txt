@@ -2,12 +2,12 @@ relations between the input/output regions of different cameras.
 
 
 cam #, inout, cam #, inout
-1, 1, 2, 1
-2, 3, 11, 1
-2, 4, 12, 1
-2, 4, 13, 1
+    1, 1, 2, 1
+    2, 3, 11, 1
+    2, 4, 12, 1
+    2, 4, 13, 1
 2, 2, 22, 2
-2, 4, 14, 4
+    2, 4, 14, 4
 22, 1, 21, 3
 22, 1, 21, 4
 22, 1, 13, 4
