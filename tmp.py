@@ -30,16 +30,25 @@ in_19_5 = [2,3,5,6,7]
 in_20_3 = [10,19,2,4,7,8,9]
 out_20_3 = [11,12,13,14,15,20,5,6,7]
 
+in_19_1 = [1,8]
+out_19_1 = [4,5,6,7,8]
+in_20_1 = [11,12,13,14,15,16,17,18,1,20,5,6]
+out_20_1 = [10,17,18,19,2,3,4,8,9]
+in_21_1 = [10,11,13,16,17,18,19,20,22,23,24,26,27,34,36,38,39,5,7]
+out_21_1 = [10,14,15,17,1,22,23,24,25,27,28,29,2,30,31,32,33,35,37,38,39,5]
 
-
+in_11_2 = [2,3,4,5]
+out_11_2 = [1,6]
+in_21_34 = [1,2,14,25]
+out_21_34 = [7,11,18,19,20,21,26]
 
 for line in file.readlines():
     cam_1 = [int(s) for s in re.findall(r'\d+', line)][0]
     id_1 = [int(s) for s in re.findall(r'\d+', line)][1]
     cam_2 = [int(s) for s in re.findall(r'\d+', line)][2]
     id_2 = [int(s) for s in re.findall(r'\d+', line)][3]
-    if cam_1 == 19 and cam_2 == 20:
-        if id_1 in in_19_5 and id_2 in out_20_3:
+    if cam_1 == 21 and cam_2 == 11:
+        if id_1 in out_21_34 and id_2 in in_11_2:
             file2.write(line)
         else:
             print("")
