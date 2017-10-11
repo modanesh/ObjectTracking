@@ -372,9 +372,9 @@ def compare_two_evaluations(eval_1, eval_2, T):
         else:
             score_2 += eval_2[i][3]
 
-        score_1 += eval_1[i][2]
+        # score_1 += eval_1[i][2]
         score_1 += eval_1[i][4]
-        score_2 += eval_2[i][2]
+        # score_2 += eval_2[i][2]
         score_2 += eval_2[i][4]
 
     acceptance_probability = math.exp((score_2 - score_1)/T)
@@ -419,6 +419,8 @@ def simulated_annealing(assignments, evaluations):
     print("........................................................")
     print(current_state)
     print(current_eval)
+    # for i in range(0, len(current_eval)):
+    #     print(current_eval[i][2], ",", current_eval[i][3], ",", current_eval[i][4])
 
 
 
@@ -427,9 +429,6 @@ def simulated_annealing(assignments, evaluations):
 
 
 def starting_step():
-    probs = []
-    assignments = []
-
     file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/txt_files/subproblems.txt")
     # file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/tmp.txt")
     for line in file.readlines():
