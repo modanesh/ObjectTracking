@@ -8,40 +8,6 @@ import os
 # np.set_printoptions(threshold=np.nan)
 
 
-def cropped_frames_bg():
-    for id in range(1, 11):
-        annotation_file = open("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/19.txt", 'r')
-        lines = annotation_file.readlines()
-
-        bg_path = "/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/Background/19.png"
-        bg_img = Image.open(bg_path)
-        count = 0
-
-        for line in range(3, len(lines)):
-            if str(id) == lines[line].split("\t")[3] and count < 10:
-                if lines[line].split("\t")[11] == str(1):
-                    if int(lines[line].split("\t")[7]) > 40 and int(lines[line].split("\t")[8]) > 90:
-                    # if int(lines[line].split("\t")[7]) > 40 or int(lines[line].split("\t")[8]) > 120:
-
-                        x = lines[line].split("\t")[5]
-                        y = lines[line].split("\t")[6]
-                        w = lines[line].split("\t")[7]
-                        h = lines[line].split("\t")[8]
-
-                        cropped_img = bg_img.crop((int(x), int(y), int(x)+int(w), int(y)+int(h)))
-
-                        width, height = cropped_img.size
-
-                        shirt = int(height / 5)
-
-                        cropped_img2 = cropped_img.crop((0, shirt, width, shirt * 3))
-
-                        cropped_img2.save("/Users/Mohamad/Desktop/MulticameraObjectDetection/OurCode/ObjectTracking/resources/19/background/background_removed_"+str(id)+"_"+lines[line].split("\t")[10]+".jpg")
-
-                        count += 1
-
-
-
 def better_cropped_frames_bg(id, path, bg_path):
     bg_img = Image.open(bg_path)
 
@@ -78,7 +44,6 @@ def better_cropped_frames_bg(id, path, bg_path):
             cropped_img2 = cropped_img.crop((0, shirt, half_width, shirt * 3))
 
             cropped_img2.save(path + "/better_background/background_removed_" + str(id) + "_" + str(frame_number) + ".jpg")
-
 
 
 def extract_foreground(background_path, foreground_path):
